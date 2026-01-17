@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:secure_task/features/home/presentation/screens/home_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:secure_task/core/router/route_names.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,12 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToHome() async {
     await Future.delayed(Duration(seconds: 2));
-    
+
     if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      context.goNamed(RouteNames.register);
     }
   }
 
