@@ -2,6 +2,8 @@
 
 A flutter project where user can securely save or write notes and tasks under pin code.
 
+Using drift (SQLite), get_it, Clean architecture, BLoC for state management. 
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
