@@ -1,14 +1,14 @@
- import 'package:secure_task/features/auth/domain/entities/user.dart';
+ import 'package:secure_task/core/database/app_database/app_database.dart';
 
 abstract class AuthRepository {
-  Future<User> login({required String pinCode});
-  Future<User> register({
+  Future<UserData> login({required String pinCode});
+  Future<UserData> register({
     required String name,
     required int age,
     required String job,
     required String sex,
-    required String pinCode,
+    required String pinCodeHash,
   });
-  Future<User?> getCurrentUser();
+  Future<UserData?> getCurrentUser();
   Future<void> logOut();
 }

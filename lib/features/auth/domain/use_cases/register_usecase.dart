@@ -1,4 +1,4 @@
-import 'package:secure_task/features/auth/domain/entities/user.dart';
+import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/features/auth/domain/repository/auth_repository.dart';
 
 class RegisterUseCase {
@@ -6,7 +6,7 @@ class RegisterUseCase {
 
   RegisterUseCase(this.repository);
 
-  Future<User> call({
+  Future<UserData> call({
     required String name,
     required int age,
     required String job,
@@ -38,7 +38,7 @@ class RegisterUseCase {
       age: age,
       job: job,
       sex: sex,
-      pinCode: pinCode,
+      pinCodeHash: pinCode,
     );
   }
 }

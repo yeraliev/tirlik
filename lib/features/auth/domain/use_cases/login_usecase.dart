@@ -1,4 +1,4 @@
-import 'package:secure_task/features/auth/domain/entities/user.dart';
+import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/features/auth/domain/repository/auth_repository.dart';
 
 class LoginUseCase {
@@ -6,7 +6,7 @@ class LoginUseCase {
 
   LoginUseCase(this.repository);
 
-  Future<User> call({required String pinCode}) async {
+  Future<UserData> call({required String pinCode}) async {
     if (pinCode.isEmpty) {
       throw Exception('Please enter PIN code');
     }

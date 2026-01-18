@@ -1,4 +1,4 @@
-import 'package:secure_task/features/auth/domain/entities/user.dart';
+import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/features/auth/domain/repository/auth_repository.dart';
 
 class GetcurrentuserUsecase {
@@ -6,7 +6,7 @@ class GetcurrentuserUsecase {
 
   GetcurrentuserUsecase({required this.repository});
 
-  Future<User?> getCurrentUser() async {
+  Future<UserData?> getCurrentUser() async {
     return await repository.getCurrentUser();
   }
 }
