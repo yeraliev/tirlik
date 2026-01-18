@@ -1,6 +1,6 @@
-# secure_task
+# tirlik
 
-A new Flutter project.
+A flutter project where user can securely save or write notes and tasks under pin code.
 
 ## Getting Started
 
