@@ -28,7 +28,14 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset('assets/logo.png', width: 400, height: 200),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/logo_main.png', width: 250, height: 100),
+            SizedBox(height: 20),
+            Text('TIRLIK', style: Theme.of(context).textTheme.headlineLarge),
+          ],
+        ),
       ),
     );
   }
