@@ -2,7 +2,7 @@
 
 A flutter project where user can securely save or write notes and tasks under pin code.
 
-Using drift (SQLite), get_it, Clean architecture, BLoC for state management. 
+Using drift (SQLite), get_it, go_router, Clean architecture, BLoC for state management. 
 
 ## Getting Started
 
