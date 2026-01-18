@@ -1,18 +1,50 @@
 # tirlik
 
-A flutter project where user can securely save or write notes and tasks under pin code.
+Tirlik - Personal Task Management App
+A secure, feature-rich task management application built with Flutter, emphasizing privacy and clean architecture principles.
+📱 About
+Secure Task is a personal productivity app that helps users organize their tasks, notes, and daily activities with PIN-based authentication. The app stores all data locally on the device using an encrypted SQLite database, ensuring complete privacy and offline functionality.
+✨ Features
 
-Using drift (SQLite), get_it, go_router, Clean architecture, BLoC for state management. 
+🔐 PIN-Based Authentication - Secure 4-digit PIN with SHA-256 hashing
+📁 Task Groups - Organize tasks into customizable categories with colors and emojis
+✅ Task Management - Create, update, and track tasks with priorities and due dates
+📝 Notes - Quick note-taking with pinning capability
+🎨 Customization - Personalize task groups with custom colors and icons
+💾 Offline First - All data stored locally with Drift (SQLite)
+🔒 Privacy Focused - No cloud sync, no data collection, everything stays on your device
 
-## Getting Started
+🛠️ Tech Stack
+Core
 
-This project is a starting point for a Flutter application.
+Flutter - Cross-platform UI framework
+Dart - Programming language
 
-A few resources to get you started if this is your first Flutter project:
+Architecture
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Clean Architecture - Separation of concerns with domain, data, and presentation layers
+BLoC Pattern - State management with flutter_bloc
+Repository Pattern - Data abstraction layer
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Database & Storage
+
+Drift (v2.30.1) - Type-safe SQL database built on SQLite
+SQLite3 - Local database engine
+Path Provider - File system access
+
+Security
+
+Crypto - SHA-256 PIN hashing
+
+Dependency Injection
+
+GetIt - Service locator for dependency injection
+
+Navigation
+
+go_router - Declarative routing with custom transitions
+
+State Management
+
+flutter_bloc - Predictable state managementmanagement. 
+
