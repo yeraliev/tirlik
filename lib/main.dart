@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:secure_task/core/di/dependency_injection.dart';
 import 'package:secure_task/core/router/app_router.dart';
 import 'package:secure_task/core/theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized;
+
+  await setupDependencies();
+
   runApp(const MyApp());
 }
 
