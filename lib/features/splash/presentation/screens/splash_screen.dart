@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:secure_task/core/router/route_names.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(Duration(seconds: 2));
 
     if (mounted) {
-      context.goNamed(RouteNames.register);
+      context.read<AuthBloc>().add(GetCurrentUser());
     }
   }
 

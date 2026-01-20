@@ -16,15 +16,26 @@ Future<void> setupDependencies() async {
 
   //feature AUTH
   //datasource
-  getIt.registerLazySingleton<AuthDatasource>(() => AuthDatasource(getIt<AppDatabase>()));
+  getIt.registerLazySingleton<AuthDatasource>(
+    () => AuthDatasource(getIt<AppDatabase>()),
+  );
 
   //repository
-  getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt<AuthDatasource>()));
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(getIt<AuthDatasource>()),
+  );
 
   //use-cases
-  getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<GetcurrentuserUsecase>(() => GetcurrentuserUsecase(repository: getIt<AuthRepository>()));
-
+  getIt.registerLazySingleton<LoginUseCase>(
+    () => LoginUseCase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<RegisterUseCase>(
+    () => RegisterUseCase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<LogoutUseCase>(
+    () => LogoutUseCase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<GetcurrentuserUsecase>(
+    () => GetcurrentuserUsecase(getIt<AuthRepository>()),
+  );
 }
