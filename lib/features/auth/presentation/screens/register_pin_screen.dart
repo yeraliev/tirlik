@@ -12,6 +12,7 @@ class RegisterPinScreen extends StatefulWidget {
 
 class _RegisterPinScreenState extends State<RegisterPinScreen> {
   final PageController _pageController = PageController();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _jobController = TextEditingController();
@@ -20,6 +21,8 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
 
   String? _selectedSex;
   bool _isConfirmingPin = false;
+
+  int _currentPage = 0;
 
   @override
   void dispose() {
@@ -57,28 +60,28 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   }
 
   void _onPinComplete(String pin) {
-    if (pin.length == 4) {
-      if (!_isConfirmingPin) {
-        setState(() => _isConfirmingPin = true);
+    if (pin.length != 4) return;
+
+    if (!_isConfirmingPin) {
+      setState(() => _isConfirmingPin = true);
+    } else {
+      if (_pinController.text == pin) {
+        context.read<AuthBloc>().add(
+          RegisterWithPin(
+            pin,
+            _nameController.text.trim(),
+            int.tryParse(_ageController.text) ?? 0,
+            _jobController.text.trim(),
+            _selectedSex ?? '',
+          ),
+        );
       } else {
-        if (_pinController.text == pin) {
-          context.read<AuthBloc>().add(
-            RegisterWithPin(
-              pin,
-              _nameController.text.trim(),
-              int.tryParse(_ageController.text) ?? 0,
-              _jobController.text.trim(),
-              _selectedSex ?? '',
-            ),
-          );
-        } else {
-          _showError('PINs do not match');
-          setState(() {
-            _isConfirmingPin = false;
-            _pinController.clear();
-            _confirmPinController.clear();
-          });
-        }
+        _showError('PINs do not match');
+        setState(() {
+          _isConfirmingPin = false;
+          _pinController.clear();
+          _confirmPinController.clear();
+        });
       }
     }
   }
@@ -88,7 +91,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        leading: _pageController.hasClients && _pageController.page == 1
+        leading: _currentPage == 1
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
@@ -111,11 +114,18 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
         child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            setState(() {
+              _currentPage = index;
+            });
+          },
           children: [_buildUserInfoPage(), _buildPinPage()],
         ),
       ),
     );
   }
+
+  //User onboarding
 
   Widget _buildUserInfoPage() {
     return Padding(
@@ -175,6 +185,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
     );
   }
 
+  //Pin page
   Widget _buildPinPage() {
     final controller = _isConfirmingPin
         ? _confirmPinController
@@ -192,7 +203,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
           const SizedBox(height: 40),
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
-            builder: (context, value, child) {
+            builder: (context, value, _) {
               return _buildPinDisplay(value.text);
             },
           ),
