@@ -6,7 +6,7 @@ import 'package:secure_task/core/theme/app_theme.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized;
+  WidgetsFlutterBinding.ensureInitialized();
 
   await setupDependencies();
 
@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(),
+    return MultiBlocProvider(
+      providers: [BlocProvider.value(value: getIt<AuthBloc>())],
       child: Builder(
         builder: (context) {
           final authBloc = context.read<AuthBloc>();

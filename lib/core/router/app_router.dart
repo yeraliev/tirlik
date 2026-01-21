@@ -27,21 +27,21 @@ class AppRouter {
       final authStatus = authBloc.state.status;
       final currentPath = state.matchedLocation;
 
-      // Always allow splash screen to show when loading
+      //Always allow splash screen to show when loading
       if (authStatus == AuthStatus.loading) {
         return currentPath == '/' ? null : '/';
       }
 
-      // Don't redirect if already on splash
+      //not redirect if already on splash
       if (currentPath == '/') {
-        // Only redirect away from splash if we have a status
+        //Only redirect away from splash if status is not loading
         if (authStatus == AuthStatus.initial) return '/register';
         if (authStatus == AuthStatus.registered) return '/login';
         if (authStatus == AuthStatus.authenticated) return '/home';
         return null;
       }
 
-      // Normal redirects for other routes
+      //Normal redirects for other routes
       if (authStatus == AuthStatus.initial && currentPath != '/register') {
         return '/register';
       }

@@ -7,6 +7,7 @@ import 'package:secure_task/features/auth/domain/use_cases/get_current_user_usec
 import 'package:secure_task/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/logout_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/register_usecase.dart';
+import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -38,4 +39,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GetcurrentuserUsecase>(
     () => GetcurrentuserUsecase(getIt<AuthRepository>()),
   );
+
+  //auth bloc
+  getIt.registerFactory<AuthBloc>(() => AuthBloc());
 }
