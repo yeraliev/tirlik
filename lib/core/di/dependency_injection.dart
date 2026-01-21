@@ -41,5 +41,5 @@ Future<void> setupDependencies() async {
   );
 
   //auth bloc
-  getIt.registerFactory<AuthBloc>(() => AuthBloc());
+  getIt.registerLazySingleton<AuthBloc>(() => AuthBloc());
 }
