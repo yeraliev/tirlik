@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_task/core/router/route_names.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:secure_task/features/auth/presentation/bloc/go_router_stream.dart';
+import 'package:secure_task/core/router/go_router_stream.dart';
 import 'package:secure_task/features/auth/presentation/screens/enter_pin_screen.dart';
 import 'package:secure_task/features/auth/presentation/screens/register_pin_screen.dart';
 import 'package:secure_task/features/home/presentation/screens/home_screen.dart';
