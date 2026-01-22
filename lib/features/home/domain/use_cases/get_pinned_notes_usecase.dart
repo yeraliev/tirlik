@@ -6,6 +6,7 @@ class GetPinnedNotesUsecase {
 
   GetPinnedNotesUsecase(this.repository);
 
+  
   Future<List<Note>> call() async {
     return await repository.getPinnedNotes();
   }
