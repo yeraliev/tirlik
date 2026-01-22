@@ -1,4 +1,4 @@
- import 'package:secure_task/core/database/app_database/app_database.dart';
+import 'package:secure_task/core/database/app_database/app_database.dart';
 
 abstract class AuthRepository {
   Future<UserData> login({required String pinCode});
