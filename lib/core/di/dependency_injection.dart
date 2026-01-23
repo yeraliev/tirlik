@@ -8,12 +8,18 @@ import 'package:secure_task/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/logout_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/register_usecase.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:secure_task/features/home/data/datasource/home_datasource.dart';
+import 'package:secure_task/features/home/data/repository/home_repository.dart';
+import 'package:secure_task/features/home/domain/repository/home_repository.dart';
+import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
+import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
   //drift db
-  getIt.registerLazySingleton<AppDatabase>(() => AppDatabase());
+  getIt.registerSingleton<AppDatabase>(AppDatabase());
 
   //feature AUTH
   //datasource
@@ -41,5 +47,39 @@ Future<void> setupDependencies() async {
   );
 
   //auth bloc
-  getIt.registerLazySingleton<AuthBloc>(() => AuthBloc());
+  getIt.registerFactory<AuthBloc>(
+    () => AuthBloc(
+      getIt<LoginUseCase>(),
+      getIt<LogoutUseCase>(),
+      getIt<GetcurrentuserUsecase>(),
+      getIt<RegisterUseCase>(),
+    ),
+  );
+
+  //feature HOME
+  //Home datasource
+  getIt.registerLazySingleton<HomeDatasource>(
+    () => HomeDatasource(getIt<AppDatabase>()),
+  );
+
+  //repository
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(getIt<HomeDatasource>()),
+  );
+
+  //use-caes
+  getIt.registerLazySingleton<GetPriorityTasksUsecase>(
+    () => GetPriorityTasksUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<GetPinnedNotesUsecase>(
+    () => GetPinnedNotesUsecase(getIt<HomeRepository>()),
+  );
+
+  //home bloc
+  getIt.registerFactory<HomeBloc>(
+    () => HomeBloc(
+      getIt<GetPinnedNotesUsecase>(),
+      getIt<GetPriorityTasksUsecase>(),
+    ),
+  );
 }

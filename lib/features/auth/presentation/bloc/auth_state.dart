@@ -13,8 +13,6 @@ class AuthState {
     this.error,
   });
 
-  factory AuthState.initial() => const AuthState(status: AuthStatus.initial);
-
   AuthState copyWith({
     AuthStatus? status,
     UserData? user,

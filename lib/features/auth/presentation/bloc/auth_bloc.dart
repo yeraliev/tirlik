@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:secure_task/core/database/app_database/app_database.dart';
-import 'package:secure_task/core/di/dependency_injection.dart';
 import 'package:secure_task/features/auth/domain/use_cases/get_current_user_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/logout_usecase.dart';
@@ -16,12 +15,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetcurrentuserUsecase _getCurrentUserUseCase;
   final LogoutUseCase _logoutUseCase;
 
-  AuthBloc()
-    : _registerUseCase = getIt<RegisterUseCase>(),
-      _loginUseCase = getIt<LoginUseCase>(),
-      _getCurrentUserUseCase = getIt<GetcurrentuserUsecase>(),
-      _logoutUseCase = getIt<LogoutUseCase>(),
-      super(AuthState(status: AuthStatus.loading)) {
+  AuthBloc(this._loginUseCase, this._logoutUseCase, this._getCurrentUserUseCase, this._registerUseCase)
+    :super(AuthState(status: AuthStatus.loading)) {
     on<RegisterWithPin>(_onRegister);
     on<LoginWithPin>(_onLogin);
     on<GetCurrentUser>(_onGetCurrentUser);
@@ -76,7 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogout(LogoutRequested event, Emitter<AuthState> emit) async {
     try {
       await _logoutUseCase.call();
-      emit(AuthState.initial());
+      emit(AuthState(status: AuthStatus.initial));
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }
