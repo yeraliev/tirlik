@@ -90,7 +90,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: const Text('Onboarding'),
         leading: _currentPage == 1
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -156,7 +156,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _selectedSex,
+            initialValue: _selectedSex,
             decoration: const InputDecoration(
               labelText: 'Sex',
               border: OutlineInputBorder(),
