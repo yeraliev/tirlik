@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:secure_task/core/validators/validators.dart';
+import 'package:secure_task/core/widgets/custom_snackbar.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/auth/presentation/widgets/custom_num_keyboard.dart';
 
@@ -12,6 +14,8 @@ class RegisterPinScreen extends StatefulWidget {
 
 class _RegisterPinScreenState extends State<RegisterPinScreen> {
   final PageController _pageController = PageController();
+
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -38,12 +42,14 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   void _nextPage() async {
     FocusScope.of(context).unfocus();
 
-    await Future.delayed(const Duration(milliseconds: 100));
+    if (_formKey.currentState!.validate()) {
+      await Future.delayed(const Duration(milliseconds: 100));
 
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _previousPage() {
@@ -54,9 +60,14 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      CustomSnackbar.errorSnackbar(
+        error: message,
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
   }
 
   void _onPinComplete(String pin) {
@@ -126,88 +137,109 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   }
 
   //User onboarding
-
   Widget _buildUserInfoPage() {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Tell us about yourself 😊',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 40),
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Name',
-              border: OutlineInputBorder(),
+      padding: EdgeInsets.all(width * 0.05),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Tell us about yourself 😊',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontSize: width * 0.053),
             ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _ageController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Age',
-              border: OutlineInputBorder(),
+            SizedBox(height: height * 0.049),
+
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+              validator: Validators.name, // ✅ Clean!
             ),
-          ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _selectedSex,
-            decoration: const InputDecoration(
-              labelText: 'Sex',
-              border: OutlineInputBorder(),
+            SizedBox(height: height * 0.020),
+
+            TextFormField(
+              controller: _ageController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Age',
+                border: OutlineInputBorder(),
+              ),
+              validator: Validators.age, // ✅ Clean!
             ),
-            items: const [
-              DropdownMenuItem(value: 'Male', child: Text('Male')),
-              DropdownMenuItem(value: 'Female', child: Text('Female')),
-              DropdownMenuItem(value: 'Other', child: Text('Other')),
-            ],
-            onChanged: (value) {
-              setState(() => _selectedSex = value);
-            },
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _jobController,
-            decoration: const InputDecoration(
-              labelText: 'Job',
-              border: OutlineInputBorder(),
+            SizedBox(height: height * 0.020),
+
+            DropdownButtonFormField<String>(
+              value: _selectedSex,
+              decoration: const InputDecoration(
+                labelText: 'Sex',
+                border: OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(value: 'Male', child: Text('Male')),
+                DropdownMenuItem(value: 'Female', child: Text('Female')),
+                DropdownMenuItem(value: 'Other', child: Text('Other')),
+              ],
+              onChanged: (value) {
+                setState(() => _selectedSex = value);
+              },
+              validator: (value) =>
+                  Validators.required(value, 'your sex'), // ✅ Clean!
             ),
-          ),
-          const Spacer(),
-          ElevatedButton(onPressed: _nextPage, child: const Text('Next')),
-        ],
+            SizedBox(height: height * 0.020),
+
+            TextFormField(
+              controller: _jobController,
+              decoration: const InputDecoration(
+                labelText: 'Job',
+                border: OutlineInputBorder(),
+              ),
+              validator: Validators.job, // ✅ Clean!
+            ),
+            const Spacer(),
+            ElevatedButton(onPressed: _nextPage, child: const Text('Next')),
+          ],
+        ),
       ),
     );
   }
 
   //Pin page
   Widget _buildPinPage() {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     final controller = _isConfirmingPin
         ? _confirmPinController
         : _pinController;
 
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(width * 0.064), // 24/375
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             _isConfirmingPin ? 'Confirm Your PIN' : 'Create Your PIN',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontSize: width * 0.053, // ~20px on 375px width
+            ),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: height * 0.049), // 40/812
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, _) {
               return _buildPinDisplay(value.text);
             },
           ),
-          const SizedBox(height: 60),
+          SizedBox(height: height * 0.074), // 60/812 ≈ 0.074
           CustomNumKeyboard(controller: controller, onComplete: _onPinComplete),
         ],
       ),
@@ -215,13 +247,15 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
   }
 
   Widget _buildPinDisplay(String pin) {
+    final width = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(4, (index) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          width: 16,
-          height: 16,
+          margin: EdgeInsets.symmetric(horizontal: width * 0.021), // 8/375
+          width: width * 0.043, // 16/375 ≈ 0.043
+          height: width * 0.043,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: index < pin.length
