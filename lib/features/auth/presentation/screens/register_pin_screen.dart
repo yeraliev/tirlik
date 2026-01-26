@@ -162,7 +162,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
                 labelText: 'Name',
                 border: OutlineInputBorder(),
               ),
-              validator: Validators.name, // ✅ Clean!
+              validator: Validators.name,
             ),
             SizedBox(height: height * 0.020),
 
@@ -173,12 +173,12 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
                 labelText: 'Age',
                 border: OutlineInputBorder(),
               ),
-              validator: Validators.age, // ✅ Clean!
+              validator: Validators.age,
             ),
             SizedBox(height: height * 0.020),
 
             DropdownButtonFormField<String>(
-              value: _selectedSex,
+              initialValue: _selectedSex,
               decoration: const InputDecoration(
                 labelText: 'Sex',
                 border: OutlineInputBorder(),
@@ -191,8 +191,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
               onChanged: (value) {
                 setState(() => _selectedSex = value);
               },
-              validator: (value) =>
-                  Validators.required(value, 'your sex'), // ✅ Clean!
+              validator: (value) => Validators.required(value, 'your sex'),
             ),
             SizedBox(height: height * 0.020),
 
@@ -202,7 +201,7 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
                 labelText: 'Job',
                 border: OutlineInputBorder(),
               ),
-              validator: Validators.job, // ✅ Clean!
+              validator: Validators.job,
             ),
             const Spacer(),
             ElevatedButton(onPressed: _nextPage, child: const Text('Next')),
@@ -222,24 +221,24 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
         : _pinController;
 
     return Padding(
-      padding: EdgeInsets.all(width * 0.064), // 24/375
+      padding: EdgeInsets.all(width * 0.064),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             _isConfirmingPin ? 'Confirm Your PIN' : 'Create Your PIN',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontSize: width * 0.053, // ~20px on 375px width
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontSize: width * 0.053),
           ),
-          SizedBox(height: height * 0.049), // 40/812
+          SizedBox(height: height * 0.049),
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, _) {
               return _buildPinDisplay(value.text);
             },
           ),
-          SizedBox(height: height * 0.074), // 60/812 ≈ 0.074
+          SizedBox(height: height * 0.074),
           CustomNumKeyboard(controller: controller, onComplete: _onPinComplete),
         ],
       ),
@@ -253,8 +252,8 @@ class _RegisterPinScreenState extends State<RegisterPinScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(4, (index) {
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: width * 0.021), // 8/375
-          width: width * 0.043, // 16/375 ≈ 0.043
+          margin: EdgeInsets.symmetric(horizontal: width * 0.021),
+          width: width * 0.043,
           height: width * 0.043,
           decoration: BoxDecoration(
             shape: BoxShape.circle,

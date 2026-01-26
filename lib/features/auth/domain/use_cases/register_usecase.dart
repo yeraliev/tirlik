@@ -13,26 +13,6 @@ class RegisterUseCase {
     required String sex,
     required String pinCode,
   }) async {
-    if (name.isEmpty) {
-      throw Exception('Name cannot be empty');
-    }
-
-    if (age < 1 || age > 150) {
-      throw Exception('Please enter a valid age');
-    }
-
-    if (job.isEmpty) {
-      throw Exception('Job cannot be empty');
-    }
-
-    if (sex.isEmpty) {
-      throw Exception('Please select sex');
-    }
-
-    if (pinCode.length != 4) {
-      throw Exception('PIN code must be 4 digits');
-    }
-
     return await repository.register(
       name: name,
       age: age,
