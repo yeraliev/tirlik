@@ -9,13 +9,9 @@ class TasksTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.task_alt,
-            size: 64,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 16),
-          const Text('Tasks Tab Content', style: TextStyle(fontSize: 20)),
+          Icon(Icons.task_alt, size: 64),
+          SizedBox(height: 16),
+          Text('There is no task', style: TextStyle(fontSize: 20)),
         ],
       ),
     );

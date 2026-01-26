@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/features/home/presentation/widgets/home_button.dart';
+import 'package:secure_task/features/home/presentation/widgets/notes_tab.dart';
+import 'package:secure_task/features/home/presentation/widgets/tasks_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Expanded(
                       child: homeButton(
                         text: 'Notes',
-                        color: AppColors.buttonPurple,
+                        color: AppColors.accent,
                         context: context,
                         icon: Icons.notes,
                       ),
@@ -144,35 +146,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Expanded(
                   child: TabBarView(
                     controller: tabController,
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.task_alt, size: 64),
-                            SizedBox(height: 16),
-                            Text(
-                              'There is no task',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Notes Tab Content
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.note, size: 64),
-                            SizedBox(height: 16),
-                            Text(
-                              'There is no pinned notes',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    children: [TasksTab(), NotesTab()],
                   ),
                 ),
               ],
