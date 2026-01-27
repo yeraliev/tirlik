@@ -14,6 +14,56 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        //Handle future migrations here
+      },
+    );
+  }
+
+  // ✅ Method to create default task groups for a user
+  Future<void> createDefaultTaskGroups(int userId) async {
+    final defaultGroups = [
+      TaskGroupsCompanion.insert(
+        name: 'Personal',
+        description: const Value('Personal tasks and goals'),
+        color: '#FF6B35',
+        icon: const Value('person'),
+        userId: userId,
+      ),
+      TaskGroupsCompanion.insert(
+        name: 'Work',
+        description: const Value('Work-related tasks'),
+        color: '#4A90E2', 
+        icon: const Value('work'),
+        userId: userId,
+      ),
+      TaskGroupsCompanion.insert(
+        name: 'Shopping',
+        description: const Value('Shopping lists and errands'),
+        color: '#00C853', 
+        icon: const Value('shopping_cart'),
+        userId: userId,
+      ),
+      TaskGroupsCompanion.insert(
+        name: 'Ideas',
+        description: const Value('Future ideas and plans'),
+        color: '#7C4DFF',
+        icon: const Value('lightbulb'),
+        userId: userId,
+      ),
+    ];
+
+    for (final group in defaultGroups) {
+      await into(taskGroups).insert(group);
+    }
+  }
+
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();

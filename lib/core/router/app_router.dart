@@ -5,6 +5,8 @@ import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/core/router/go_router_stream.dart';
 import 'package:secure_task/features/auth/presentation/screens/enter_pin_screen.dart';
 import 'package:secure_task/features/auth/presentation/screens/register_pin_screen.dart';
+import 'package:secure_task/features/home/presentation/screens/add_note_screen.dart';
+import 'package:secure_task/features/home/presentation/screens/add_task_screen.dart';
 import 'package:secure_task/features/home/presentation/screens/home_screen.dart';
 import 'package:secure_task/features/splash/presentation/screens/splash_screen.dart';
 
@@ -57,7 +59,7 @@ class AppRouter {
           return '/login';
         }
 
-        if (authStatus == AuthStatus.authenticated && currentPath != '/home') {
+        if (authStatus == AuthStatus.authenticated && currentPath == '/login') {
           return '/home';
         }
 
@@ -86,6 +88,18 @@ class AppRouter {
           path: '/home',
           name: RouteNames.home,
           pageBuilder: (context, state) => _fadePage(state, const HomeScreen()),
+        ),
+        GoRoute(
+          path: '/addTask',
+          name: RouteNames.addTask,
+          pageBuilder: (context, state) =>
+              _fadePage(state, const AddTaskScreen()),
+        ),
+        GoRoute(
+          path: '/addNote',
+          name: RouteNames.addNote,
+          pageBuilder: (context, state) =>
+              _fadePage(state, const AddNoteScreen()),
         ),
       ],
     );

@@ -24,4 +24,55 @@ class HomeRepositoryImpl implements HomeRepository {
       throw Exception('Failed to fetch tasks: $e');
     }
   }
+
+  @override
+  Future<void> addNote({
+    required String title,
+    required String content,
+    required int userId,
+    bool isPinned = false,
+  }) async {
+    try {
+      await datasource.addNote(
+        title: title,
+        content: content,
+        userId: userId,
+        isPinned: isPinned,
+      );
+    } catch (e) {
+      throw Exception('Failed to add note: $e');
+    }
+  }
+
+  @override
+  Future<void> addTask({
+    required String title,
+    required String description,
+    required int taskGroupId,
+    required int userId,
+    DateTime? dueDate,
+    int priority = 0,
+  }) async {
+    try {
+      await datasource.addTask(
+        title: title,
+        description: description,
+        taskGroupId: taskGroupId,
+        userId: userId,
+        dueDate: dueDate,
+        priority: priority,
+      );
+    } catch (e) {
+      throw Exception('Failed to add task: $e');
+    }
+  }
+  
+  @override
+  Future<List<TaskGroup>> getTaskGroups() async {
+    try {
+      return await datasource.getTaskGroups();
+    } catch (e) {
+      throw Exception('Failed to fetch task groups: $e');
+    }
+  }
 }

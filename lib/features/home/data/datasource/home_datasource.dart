@@ -44,4 +44,48 @@ class HomeDatasource {
           ..limit(15))
         .get();
   }
+
+  Future<void> addTask({
+    required String title,
+    required String description,
+    required int taskGroupId,
+    required int userId,
+    DateTime? dueDate,
+    int priority = 0,
+  }) async {
+    await _database
+        .into(_database.tasks)
+        .insert(
+          TasksCompanion.insert(
+            title: title,
+            description: Value(description),
+            taskGroupId: taskGroupId,
+            userId: userId,
+            dueDate: Value(dueDate),
+            priority: Value(priority),
+          ),
+        );
+  }
+
+  Future<void> addNote({
+    required String title,
+    required String content,
+    required int userId,
+    bool isPinned = false,
+  }) async {
+    await _database
+        .into(_database.notes)
+        .insert(
+          NotesCompanion.insert(
+            title: title,
+            content: content,
+            userId: userId,
+            isPinned: Value(isPinned),
+          ),
+        );
+  }
+
+  Future<List<TaskGroup>> getTaskGroups() async {
+    return await _database.select(_database.taskGroups).get();
+  }
 }

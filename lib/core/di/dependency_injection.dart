@@ -11,8 +11,11 @@ import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/home/data/datasource/home_datasource.dart';
 import 'package:secure_task/features/home/data/repository/home_repository.dart';
 import 'package:secure_task/features/home/domain/repository/home_repository.dart';
+import 'package:secure_task/features/home/domain/use_cases/add_note_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/add_task_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/get_task_groups_usecase.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -74,12 +77,24 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GetPinnedNotesUsecase>(
     () => GetPinnedNotesUsecase(getIt<HomeRepository>()),
   );
+  getIt.registerLazySingleton<AddNoteUsecase>(
+    () => AddNoteUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<AddTaskUsecase>(
+    () => AddTaskUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<GetTaskGroupsUsecase>(
+    () => GetTaskGroupsUsecase(getIt<HomeRepository>()),
+  );
 
   //home bloc
   getIt.registerFactory<HomeBloc>(
     () => HomeBloc(
       getIt<GetPinnedNotesUsecase>(),
       getIt<GetPriorityTasksUsecase>(),
+      getIt<AddTaskUsecase>(),
+      getIt<AddNoteUsecase>(),
+      getIt<GetTaskGroupsUsecase>(),
     ),
   );
 }

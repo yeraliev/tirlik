@@ -4,6 +4,7 @@ import 'package:secure_task/core/di/dependency_injection.dart';
 import 'package:secure_task/core/router/app_router.dart';
 import 'package:secure_task/core/theme/app_theme.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider.value(value: getIt<AuthBloc>())],
+      providers: [
+        BlocProvider.value(value: getIt<AuthBloc>()),
+        BlocProvider.value(value: getIt<HomeBloc>()),
+      ],
       child: Builder(
         builder: (context) {
           final authBloc = context.read<AuthBloc>();

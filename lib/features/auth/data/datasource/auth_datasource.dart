@@ -27,6 +27,8 @@ class AuthDatasource {
           ),
         );
 
+    await _database.createDefaultTaskGroups(userId);
+
     return await (_database.select(
       _database.user,
     )..where((u) => u.id.equals(userId))).getSingle();

@@ -5,11 +5,10 @@ Widget homeButton({
   required Color color,
   required BuildContext context,
   IconData? icon,
+  VoidCallback? onTap,
 }) {
   return GestureDetector(
-    onTap: () {
-      print('$text pressed');
-    },
+    onTap: onTap,
     child: Container(
       decoration: BoxDecoration(
         color: color,

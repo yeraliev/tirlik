@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:secure_task/core/router/route_names.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/features/home/presentation/widgets/home_button.dart';
 import 'package:secure_task/features/home/presentation/widgets/notes_tab.dart';
@@ -75,6 +77,9 @@ class _HomeScreenState extends State<HomeScreen>
                         color: AppColors.buttonOrange,
                         context: context,
                         icon: Icons.add_task,
+                        onTap: () {
+                          context.pushNamed(RouteNames.addTask);
+                        },
                       ),
                     ),
                     SizedBox(width: 8),
@@ -84,6 +89,9 @@ class _HomeScreenState extends State<HomeScreen>
                         color: AppColors.buttonBlue,
                         context: context,
                         icon: Icons.note_add,
+                        onTap: () {
+                          context.pushNamed(RouteNames.addNote);
+                        },
                       ),
                     ),
                   ],
