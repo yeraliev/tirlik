@@ -36,11 +36,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      emit(HomeState(status: HomeStatus.loading));
+      emit(state.copyWith(status: HomeStatus.loading));
       final tasks = await _getPriorityTasksUsecase.call();
-      emit(HomeState(status: HomeStatus.loaded, tasks: tasks));
+      emit(state.copyWith(status: HomeStatus.loaded, tasks: tasks));
     } catch (e) {
-      emit(HomeState(status: HomeStatus.error, error: e.toString()));
+      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
     }
   }
 
@@ -49,11 +49,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      emit(HomeState(status: HomeStatus.loading));
+      emit(state.copyWith(status: HomeStatus.loading));
       final notes = await _getPinnedNotesUsecase.call();
-      emit(HomeState(status: HomeStatus.loaded, notes: notes));
+      emit(state.copyWith(status: HomeStatus.loaded, notes: notes));
     } catch (e) {
-      emit(HomeState(status: HomeStatus.error, error: e.toString()));
+      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
     }
   }
 
@@ -62,7 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      emit(HomeState(status: HomeStatus.loading));
+      emit(state.copyWith(status: HomeStatus.loading));
       await _addTaskUsecase.call(
         title: event.title,
         description: event.description,
@@ -71,9 +71,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         priority: event.priority,
         dueDate: event.dueDate,
       );
-      emit(HomeState(status: HomeStatus.loaded));
+
+      //fetch updated tasks to keep UI in sync
+      final updatedTasks = await _getPriorityTasksUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
     } catch (e) {
-      emit(HomeState(status: HomeStatus.error, error: e.toString()));
+      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
     }
   }
 
@@ -82,16 +85,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      emit(HomeState(status: HomeStatus.loading));
+      emit(state.copyWith(status: HomeStatus.loading));
       await _addNoteUsecase.call(
         title: event.title,
         content: event.content,
         userId: event.userId,
         isPinned: event.isPinned,
       );
-      emit(HomeState(status: HomeStatus.loaded));
+
+      //fetch updated notes
+      final updatedNotes = await _getPinnedNotesUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, notes: updatedNotes));
     } catch (e) {
-      emit(HomeState(status: HomeStatus.error, error: e.toString()));
+      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
     }
   }
 
@@ -100,11 +106,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      emit(HomeState(status: HomeStatus.loading));
+      emit(state.copyWith(status: HomeStatus.loading));
       final taskGroups = await _getTaskGroupsUsecase.call();
-      emit(HomeState(status: HomeStatus.loaded, taskGroups: taskGroups));
+      emit(state.copyWith(status: HomeStatus.loaded, taskGroups: taskGroups));
     } catch (e) {
-      emit(HomeState(status: HomeStatus.error, error: e.toString()));
+      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
     }
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_task/core/database/app_database/app_database.dart';
+import 'package:secure_task/core/router/route_names.dart';
 import 'package:secure_task/core/validators/validators.dart';
+import 'package:secure_task/core/widgets/custom_snackbar.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
@@ -37,6 +39,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     super.dispose();
   }
 
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      CustomSnackbar.errorSnackbar(
+        error: message,
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
@@ -54,95 +67,101 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           children: [
             SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  if (state.status == HomeStatus.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state.status == HomeStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  final taskGroups = state.taskGroups ?? [];
+                    final taskGroups = state.taskGroups ?? [];
 
-                  if (taskGroups.isEmpty) {
-                    return Center(
+                    if (taskGroups.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('No task groups'),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<HomeBloc>().add(
+                                  GetTaskGroupsEvent(),
+                                );
+                              },
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return Form(
+                      key: _formKey,
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('No task groups'),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<HomeBloc>().add(
-                                GetTaskGroupsEvent(),
-                              );
-                            },
-                            child: const Text('Retry'),
+                          Text(
+                            'Choose your task type: ',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
                           ),
+                          SizedBox(height: height * 0.01),
+                          _buildGroups(taskGroups),
+                          SizedBox(height: height * 0.02),
+                          TextFormField(
+                            controller: _titleController,
+                            decoration: const InputDecoration(
+                              labelText: 'Title',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: Validators.title,
+                          ),
+                          SizedBox(height: height * 0.02),
+                          TextFormField(
+                            controller: _descController,
+                            maxLines: 4,
+                            decoration: const InputDecoration(
+                              labelText: 'Description',
+                              border: OutlineInputBorder(),
+                              alignLabelWithHint: true,
+                            ),
+                            validator: Validators.description,
+                          ),
+                          SizedBox(height: height * 0.02),
+                          Text(
+                            'Priority: ',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.01),
+                          _buildPriorities(priorities),
+                          SizedBox(height: height * 0.02),
+                          Text(
+                            'Due date (optional): ',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.01),
+                          _buildDatePicker(),
+                          SizedBox(height: 100),
                         ],
                       ),
                     );
-                  }
-
-                  return Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Choose your task type: ',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.01),
-                        _buildGroups(taskGroups),
-                        SizedBox(height: height * 0.02),
-                        TextFormField(
-                          controller: _titleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Title',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: Validators.name,
-                        ),
-                        SizedBox(height: height * 0.02),
-                        TextFormField(
-                          controller: _descController,
-                          maxLines: 4,
-                          decoration: const InputDecoration(
-                            labelText: 'Description',
-                            border: OutlineInputBorder(),
-                            alignLabelWithHint: true,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Text(
-                          'Priority: ',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.01),
-                        _buildPriorities(priorities),
-                        SizedBox(height: height * 0.02),
-                        Text(
-                          'Due date (optional): ',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.01),
-                        _buildDatePicker(),
-                        SizedBox(height: 100),
-                      ],
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
             ),
             Positioned(
@@ -150,7 +169,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               left: 16,
               right: 16,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  final taskGroupError = Validators.taskGroup(selectedGroupId);
+                  final priorityError = Validators.priority(selectedPriority);
+
                   if (_formKey.currentState!.validate() &&
                       selectedGroupId != null) {
                     final authState = context.read<AuthBloc>().state;
@@ -167,13 +189,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                     );
 
-                    context.pop();
+                    context.goNamed(RouteNames.home);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a task group'),
-                      ),
-                    );
+                    if (taskGroupError != null) {
+                      _showError(taskGroupError);
+                    } else if (priorityError != null) {
+                      _showError(priorityError);
+                    }
                   }
                 },
                 child: const Text('Save Task'),
