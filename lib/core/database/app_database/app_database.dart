@@ -26,7 +26,6 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  // ✅ Method to create default task groups for a user
   Future<void> createDefaultTaskGroups(int userId) async {
     final defaultGroups = [
       TaskGroupsCompanion.insert(
@@ -39,14 +38,14 @@ class AppDatabase extends _$AppDatabase {
       TaskGroupsCompanion.insert(
         name: 'Work',
         description: const Value('Work-related tasks'),
-        color: '#4A90E2', 
+        color: '#4A90E2',
         icon: const Value('work'),
         userId: userId,
       ),
       TaskGroupsCompanion.insert(
         name: 'Shopping',
         description: const Value('Shopping lists and errands'),
-        color: '#00C853', 
+        color: '#00C853',
         icon: const Value('shopping_cart'),
         userId: userId,
       ),
