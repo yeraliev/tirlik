@@ -88,4 +88,27 @@ class HomeDatasource {
   Future<List<TaskGroup>> getTaskGroups() async {
     return await _database.select(_database.taskGroups).get();
   }
+
+  Future<int> updateTask({
+    required int taskId,
+    String? title,
+    String? description,
+    int? taskGroupId,
+    int? priority,
+    DateTime? dueDate,
+    bool? isCompleted,
+  }) {
+    final companion = TasksCompanion(
+      title: title != null ? Value(title) : Value.absent(),
+      description: description != null ? Value(description) : Value.absent(),
+      taskGroupId: taskGroupId != null ? Value(taskGroupId) : Value.absent(),
+      priority: priority != null ? Value(priority) : Value.absent(),
+      dueDate: dueDate != null ? Value(dueDate) : Value.absent(),
+      isCompleted: isCompleted != null ? Value(isCompleted) : Value.absent(),
+    );
+
+    return (_database.update(
+      _database.tasks,
+    )..where((tbl) => tbl.id.equals(taskId))).write(companion);
+  }
 }

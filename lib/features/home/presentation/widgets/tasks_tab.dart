@@ -76,15 +76,19 @@ class _TasksTabState extends State<TasksTab> {
           itemCount: state.tasks!.length,
           itemBuilder: (context, index) {
             final task = state.tasks![index];
+            final isCompleted = task.isCompleted;
 
             return Card(
               margin: EdgeInsets.only(bottom: height * 0.015),
               child: ListTile(
-                leading: Icon(
-                  Icons.check_circle_outline,
-                  color: AppColors.buttonOrange,
-                ),
+                leading: Icon(Icons.circle, color: Colors.red, size: 16),
                 title: Text(task.title),
+                trailing: Checkbox(
+                  value: isCompleted,
+                  onChanged: (value) {
+                    if (value == null) return;
+                  },
+                ),
                 subtitle: Text(task.description ?? ""),
               ),
             );
