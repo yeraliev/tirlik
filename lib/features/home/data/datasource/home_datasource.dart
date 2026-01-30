@@ -89,7 +89,7 @@ class HomeDatasource {
     return await _database.select(_database.taskGroups).get();
   }
 
-  Future<int> updateTask({
+  Future<void> updateTask({
     required int taskId,
     String? title,
     String? description,
@@ -97,7 +97,7 @@ class HomeDatasource {
     int? priority,
     DateTime? dueDate,
     bool? isCompleted,
-  }) {
+  }) async {
     final companion = TasksCompanion(
       title: title != null ? Value(title) : Value.absent(),
       description: description != null ? Value(description) : Value.absent(),
@@ -107,8 +107,14 @@ class HomeDatasource {
       isCompleted: isCompleted != null ? Value(isCompleted) : Value.absent(),
     );
 
-    return (_database.update(
+    await (_database.update(
       _database.tasks,
     )..where((tbl) => tbl.id.equals(taskId))).write(companion);
+  }
+
+  Future<void> deleteTask({required int taskId}) async {
+    await (_database.delete(
+      _database.tasks,
+    )..where((task) => task.id.equals(taskId))).go();
   }
 }

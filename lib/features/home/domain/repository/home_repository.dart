@@ -18,4 +18,14 @@ abstract class HomeRepository {
     bool isPinned = false,
   });
   Future<List<TaskGroup>> getTaskGroups();
+  Future<void> updateTask({
+    required int taskId,
+    String? title,
+    String? description,
+    int? taskGroupId,
+    int? priority,
+    DateTime? dueDate,
+    bool? isCompleted,
+  });
+  Future<void> deleteTask({required int taskId});
 }

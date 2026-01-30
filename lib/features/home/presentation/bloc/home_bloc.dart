@@ -3,9 +3,11 @@ import 'package:meta/meta.dart';
 import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_task_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/delete_task_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_task_groups_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/update_task_usecase.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -16,6 +18,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AddTaskUsecase _addTaskUsecase;
   final AddNoteUsecase _addNoteUsecase;
   final GetTaskGroupsUsecase _getTaskGroupsUsecase;
+  final UpdateTaskUseCase _updateTaskUseCase;
+  final DeleteTaskUsecase _deleteTaskUsecase;
 
   HomeBloc(
     this._getPinnedNotesUsecase,
@@ -23,12 +27,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this._addTaskUsecase,
     this._addNoteUsecase,
     this._getTaskGroupsUsecase,
+    this._updateTaskUseCase,
+    this._deleteTaskUsecase,
   ) : super(HomeState(status: HomeStatus.loading)) {
     on<GetTasksEvent>(_onGetTasksEvent);
     on<GetNotesEvent>(_onGetNotesEvent);
     on<AddTaskEvent>(_onAddTaskEvent);
     on<AddNoteEvent>(_onAddNoteEvent);
     on<GetTaskGroupsEvent>(_onGetTaskGroupsEvent);
+    on<UpdateTaskEvent>(_onUpdateTaskEvent);
+    on<DeleteTaskEvent>(_onDeleteTaskEvent);
   }
 
   Future<void> _onGetTasksEvent(
@@ -40,7 +48,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final tasks = await _getPriorityTasksUsecase.call();
       emit(state.copyWith(status: HomeStatus.loaded, tasks: tasks));
     } catch (e) {
-      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to fetch Tasks!',
+        ),
+      );
     }
   }
 
@@ -53,7 +66,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final notes = await _getPinnedNotesUsecase.call();
       emit(state.copyWith(status: HomeStatus.loaded, notes: notes));
     } catch (e) {
-      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to fetch Notes!',
+        ),
+      );
     }
   }
 
@@ -76,7 +94,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updatedTasks = await _getPriorityTasksUsecase.call();
       emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
     } catch (e) {
-      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
+      emit(
+        state.copyWith(status: HomeStatus.error, error: 'Failed to add Task!'),
+      );
     }
   }
 
@@ -97,7 +117,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updatedNotes = await _getPinnedNotesUsecase.call();
       emit(state.copyWith(status: HomeStatus.loaded, notes: updatedNotes));
     } catch (e) {
-      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
+      emit(
+        state.copyWith(status: HomeStatus.error, error: 'Failed to add Note!'),
+      );
     }
   }
 
@@ -110,7 +132,62 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final taskGroups = await _getTaskGroupsUsecase.call();
       emit(state.copyWith(status: HomeStatus.loaded, taskGroups: taskGroups));
     } catch (e) {
-      emit(state.copyWith(status: HomeStatus.error, error: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to fetch task groups!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onUpdateTaskEvent(
+    UpdateTaskEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      await _updateTaskUseCase.call(
+        taskId: event.taskId,
+        title: event.title,
+        description: event.description,
+        taskGroupId: event.taskGroupId,
+        priority: event.priority,
+        dueDate: event.dueDate,
+        isCompleted: event.isCompleted,
+      );
+
+      //fetch updated tasks to keep UI in sync
+      final updatedTasks = await _getPriorityTasksUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to update task!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDeleteTaskEvent(
+    DeleteTaskEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      await _deleteTaskUsecase.call(taskId: event.taskId);
+
+      //fetch updated tasks to keep UI in sync
+      final updatedTasks = await _getPriorityTasksUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to delete task!',
+        ),
+      );
     }
   }
 }

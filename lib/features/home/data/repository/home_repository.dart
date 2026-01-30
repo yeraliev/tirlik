@@ -66,13 +66,47 @@ class HomeRepositoryImpl implements HomeRepository {
       throw Exception('Failed to add task: $e');
     }
   }
-  
+
   @override
   Future<List<TaskGroup>> getTaskGroups() async {
     try {
       return await datasource.getTaskGroups();
     } catch (e) {
       throw Exception('Failed to fetch task groups: $e');
+    }
+  }
+
+  @override
+  Future<void> updateTask({
+    required int taskId,
+    String? title,
+    String? description,
+    int? taskGroupId,
+    int? priority,
+    DateTime? dueDate,
+    bool? isCompleted,
+  }) async {
+    try {
+      await datasource.updateTask(
+        taskId: taskId,
+        title: title,
+        description: description,
+        taskGroupId: taskGroupId,
+        priority: priority,
+        dueDate: dueDate,
+        isCompleted: isCompleted,
+      );
+    } catch (e) {
+      throw Exception('Failed to update task: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteTask({required int taskId}) async {
+    try {
+      await datasource.deleteTask(taskId: taskId);
+    } catch (e) {
+      throw Exception('Failed to delete task: $e');
     }
   }
 }

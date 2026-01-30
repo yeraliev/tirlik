@@ -13,9 +13,11 @@ import 'package:secure_task/features/home/data/repository/home_repository.dart';
 import 'package:secure_task/features/home/domain/repository/home_repository.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_task_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/delete_task_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_task_groups_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/update_task_usecase.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -86,6 +88,12 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GetTaskGroupsUsecase>(
     () => GetTaskGroupsUsecase(getIt<HomeRepository>()),
   );
+  getIt.registerLazySingleton<UpdateTaskUseCase>(
+    () => UpdateTaskUseCase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<DeleteTaskUsecase>(
+    () => DeleteTaskUsecase(getIt<HomeRepository>()),
+  );
 
   //home bloc
   getIt.registerFactory<HomeBloc>(
@@ -95,6 +103,8 @@ Future<void> setupDependencies() async {
       getIt<AddTaskUsecase>(),
       getIt<AddNoteUsecase>(),
       getIt<GetTaskGroupsUsecase>(),
+      getIt<UpdateTaskUseCase>(),
+      getIt<DeleteTaskUsecase>(),
     ),
   );
 }

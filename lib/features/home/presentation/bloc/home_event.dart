@@ -40,3 +40,29 @@ class AddTaskEvent extends HomeEvent {
 }
 
 class GetTaskGroupsEvent extends HomeEvent {}
+
+class UpdateTaskEvent extends HomeEvent {
+  final int taskId;
+  final String? title;
+  final String? description;
+  final int? taskGroupId;
+  final int? priority;
+  final DateTime? dueDate;
+  final bool? isCompleted;
+
+  UpdateTaskEvent({
+    required this.taskId,
+    this.title,
+    this.description,
+    this.taskGroupId,
+    this.priority,
+    this.dueDate,
+    this.isCompleted,
+  });
+}
+
+class DeleteTaskEvent extends HomeEvent {
+  final int taskId;
+
+  DeleteTaskEvent({required this.taskId});
+}
