@@ -13,10 +13,14 @@ import 'package:secure_task/features/home/data/repository/home_repository.dart';
 import 'package:secure_task/features/home/domain/repository/home_repository.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_task_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/create_task_group_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/delete_task_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/get_all_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_task_groups_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/search_notes_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/update_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/update_task_usecase.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 
@@ -94,6 +98,18 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<DeleteTaskUsecase>(
     () => DeleteTaskUsecase(getIt<HomeRepository>()),
   );
+  getIt.registerLazySingleton<GetAllTasksUsecase>(
+    () => GetAllTasksUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<SearchNotesUsecase>(
+    () => SearchNotesUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<CreateTaskGroupUsecase>(
+    () => CreateTaskGroupUsecase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateNoteUsecase>(
+    () => UpdateNoteUsecase(getIt<HomeRepository>()),
+  );
 
   //home bloc
   getIt.registerFactory<HomeBloc>(
@@ -105,6 +121,10 @@ Future<void> setupDependencies() async {
       getIt<GetTaskGroupsUsecase>(),
       getIt<UpdateTaskUseCase>(),
       getIt<DeleteTaskUsecase>(),
+      getIt<GetAllTasksUsecase>(),
+      getIt<SearchNotesUsecase>(),
+      getIt<CreateTaskGroupUsecase>(),
+      getIt<UpdateNoteUsecase>(),
     ),
   );
 }

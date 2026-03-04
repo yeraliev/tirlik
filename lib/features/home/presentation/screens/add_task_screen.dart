@@ -211,43 +211,176 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return Wrap(
       spacing: 12,
       runSpacing: 12,
-      children: taskGroups.map((group) {
-        final isSelected = selectedGroupId == group.id;
-        return InkWell(
-          onTap: () {
-            setState(() {
-              if (selectedGroupId == group.id) {
-                selectedGroupId = null;
-              } else {
-                selectedGroupId = group.id;
-              }
-            });
-          },
+      children: [
+        ...taskGroups.map((group) {
+          final isSelected = selectedGroupId == group.id;
+          return InkWell(
+            onTap: () {
+              setState(() {
+                selectedGroupId = selectedGroupId == group.id ? null : group.id;
+              });
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey.shade300,
+                ),
+              ),
+              child: Text(
+                group.name,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          );
+        }),
+        InkWell(
+          onTap: () => _showCreateGroupDialog(),
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.primary,
+                style: BorderStyle.solid,
               ),
             ),
-            child: Text(
-              group.name,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.add,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'New type',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  void _showCreateGroupDialog() {
+    final nameController = TextEditingController();
+    String selectedColor = '#6C63FF';
+    final colors = [
+      '#6C63FF', '#FF6B35', '#4A90E2', '#00C853',
+      '#7C4DFF', '#E91E63', '#009688', '#FF9800',
+    ];
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Text('New Task Type'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Color',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: colors.map((hex) {
+                      final color = Color(
+                        int.parse(hex.replaceFirst('#', '0xFF')),
+                      );
+                      final isSelected = selectedColor == hex;
+                      return GestureDetector(
+                        onTap: () => setDialogState(() => selectedColor = hex),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected
+                                  ? Colors.black87
+                                  : Colors.transparent,
+                              width: 2.5,
+                            ),
+                          ),
+                          child: isSelected
+                              ? const Icon(Icons.check, color: Colors.white, size: 16)
+                              : null,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final name = nameController.text.trim();
+                    if (name.isEmpty) return;
+                    final authState = context.read<AuthBloc>().state;
+                    final userId = authState.user?.id;
+                    if (userId == null) return;
+                    context.read<HomeBloc>().add(
+                      CreateTaskGroupEvent(
+                        name: name,
+                        color: selectedColor,
+                        userId: userId,
+                      ),
+                    );
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('Create'),
+                ),
+              ],
+            );
+          },
         );
-      }).toList(),
+      },
     );
   }
 

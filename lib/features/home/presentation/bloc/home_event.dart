@@ -66,3 +66,44 @@ class DeleteTaskEvent extends HomeEvent {
 
   DeleteTaskEvent({required this.taskId});
 }
+
+class GetAllTasksEvent extends HomeEvent {
+  final DateTime? dateFilter;
+  final int? priorityFilter;
+
+  GetAllTasksEvent({this.dateFilter, this.priorityFilter});
+}
+
+class SearchNotesEvent extends HomeEvent {
+  final String query;
+
+  SearchNotesEvent({this.query = ''});
+}
+
+class CreateTaskGroupEvent extends HomeEvent {
+  final String name;
+  final String color;
+  final int userId;
+  final String? icon;
+
+  CreateTaskGroupEvent({
+    required this.name,
+    required this.color,
+    required this.userId,
+    this.icon,
+  });
+}
+
+class UpdateNoteEvent extends HomeEvent {
+  final int noteId;
+  final String? title;
+  final String? content;
+  final bool? isPinned;
+
+  UpdateNoteEvent({
+    required this.noteId,
+    this.title,
+    this.content,
+    this.isPinned,
+  });
+}

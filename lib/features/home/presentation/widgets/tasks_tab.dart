@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/core/widgets/custom_snackbar.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 import 'package:secure_task/features/home/presentation/widgets/delete_task.dart';
 import 'package:secure_task/features/home/presentation/widgets/edit_task.dart';
+import 'package:secure_task/features/home/presentation/widgets/task_detail_sheet.dart';
 
 class TasksTab extends StatefulWidget {
   const TasksTab({super.key});
@@ -123,6 +125,11 @@ class _TasksTabState extends State<TasksTab> {
               child: Card(
                 margin: EdgeInsets.only(bottom: height * 0.015),
                 child: ListTile(
+                  onTap: () => TaskDetailSheet.show(
+                    context,
+                    task: task,
+                    groups: state.taskGroups,
+                  ),
                   title: Text(
                     task.title,
                     style: TextStyle(
@@ -143,10 +150,37 @@ class _TasksTabState extends State<TasksTab> {
                       );
                     },
                   ),
-                  subtitle: Text(
-                    task.description ?? "",
-                    maxLines: 3,
-                    overflow: TextOverflow.fade,
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 4),
+                      _buildGroupChip(state.taskGroups, task.taskGroupId),
+                      if (task.dueDate != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 12,
+                                color: task.dueDate!.isBefore(DateTime.now())
+                                    ? Colors.red.shade400
+                                    : Colors.grey.shade500,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${task.dueDate!.day.toString().padLeft(2, '0')}/${task.dueDate!.month.toString().padLeft(2, '0')}/${task.dueDate!.year}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: task.dueDate!.isBefore(DateTime.now())
+                                      ? Colors.red.shade400
+                                      : Colors.grey.shade500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
                   trailing: IconButton(
                     icon: Icon(Icons.edit, color: AppColors.primary),
@@ -199,5 +233,27 @@ class _TasksTabState extends State<TasksTab> {
     if (success ?? false) {
       _showSuccess('Task updated successfully!');
     }
+  }
+
+  Widget _buildGroupChip(List<TaskGroup>? groups, int taskGroupId) {
+    if (groups == null) return const SizedBox.shrink();
+    final group = groups.where((g) => g.id == taskGroupId).firstOrNull;
+    if (group == null) return const SizedBox.shrink();
+    final color = Color(int.parse(group.color.replaceFirst('#', '0xFF')));
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        group.name,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    );
   }
 }

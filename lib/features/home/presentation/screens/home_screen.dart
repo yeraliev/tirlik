@@ -105,6 +105,9 @@ class _HomeScreenState extends State<HomeScreen>
                         color: AppColors.buttonGreen,
                         context: context,
                         icon: Icons.list_alt,
+                        onTap: () {
+                          context.pushNamed(RouteNames.allTasks);
+                        },
                       ),
                     ),
                     SizedBox(width: 8),
@@ -114,6 +117,9 @@ class _HomeScreenState extends State<HomeScreen>
                         color: AppColors.accent,
                         context: context,
                         icon: Icons.notes,
+                        onTap: () {
+                          context.pushNamed(RouteNames.allNotes);
+                        },
                       ),
                     ),
                   ],

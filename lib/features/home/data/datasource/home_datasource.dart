@@ -7,23 +7,13 @@ class HomeDatasource {
   HomeDatasource(this._database);
 
   Future<List<Task>> getPriorityTasks() async {
-    final priorityTasks =
-        await (_database.select(_database.tasks)
-              ..where((t) => t.priority.isBiggerThanValue(0))
-              ..orderBy([
-                (t) => OrderingTerm.desc(t.priority),
-                (t) => OrderingTerm.desc(t.createdAt),
-              ])
-              ..limit(15))
-            .get();
-
-    if (priorityTasks.isNotEmpty) {
-      return priorityTasks;
-    }
-
     return await (_database.select(_database.tasks)
-          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
-          ..limit(15))
+          ..where((t) => t.isCompleted.equals(false))
+          ..orderBy([
+            (t) => OrderingTerm.desc(t.priority),
+            (t) => OrderingTerm.desc(t.createdAt),
+          ])
+          ..limit(20))
         .get();
   }
 
@@ -89,6 +79,22 @@ class HomeDatasource {
     return await _database.select(_database.taskGroups).get();
   }
 
+  Future<void> createTaskGroup({
+    required String name,
+    required String color,
+    required int userId,
+    String? icon,
+  }) async {
+    await _database.into(_database.taskGroups).insert(
+      TaskGroupsCompanion.insert(
+        name: name,
+        color: color,
+        userId: userId,
+        icon: Value(icon),
+      ),
+    );
+  }
+
   Future<void> updateTask({
     required int taskId,
     String? title,
@@ -116,5 +122,67 @@ class HomeDatasource {
     await (_database.delete(
       _database.tasks,
     )..where((task) => task.id.equals(taskId))).go();
+  }
+
+  Future<List<Task>> getAllTasks({
+    DateTime? dateFilter,
+    int? priorityFilter,
+  }) async {
+    final query = _database.select(_database.tasks)
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.priority),
+        (t) => OrderingTerm.desc(t.createdAt),
+      ]);
+
+    query.where((t) {
+      Expression<bool>? cond;
+
+      if (dateFilter != null) {
+        final start = DateTime(
+          dateFilter.year,
+          dateFilter.month,
+          dateFilter.day,
+        );
+        final end = start.add(const Duration(days: 1));
+        cond = t.dueDate.isBetweenValues(start, end);
+      }
+
+      if (priorityFilter != null) {
+        final p = t.priority.equals(priorityFilter);
+        cond = cond != null ? cond & p : p;
+      }
+
+      return cond ?? const Constant(true);
+    });
+
+    return await query.get();
+  }
+
+  Future<void> updateNote({
+    required int noteId,
+    String? title,
+    String? content,
+    bool? isPinned,
+  }) async {
+    final companion = NotesCompanion(
+      title: title != null ? Value(title) : Value.absent(),
+      content: content != null ? Value(content) : Value.absent(),
+      isPinned: isPinned != null ? Value(isPinned) : Value.absent(),
+      updatedAt: Value(DateTime.now()),
+    );
+    await (_database.update(
+      _database.notes,
+    )..where((n) => n.id.equals(noteId))).write(companion);
+  }
+
+  Future<List<Note>> searchNotes(String query) async {
+    final pattern = '%$query%';
+    return await (_database.select(_database.notes)
+          ..where((n) => n.title.like(pattern) | n.content.like(pattern))
+          ..orderBy([
+            (n) => OrderingTerm.desc(n.isPinned),
+            (n) => OrderingTerm.desc(n.createdAt),
+          ]))
+        .get();
   }
 }

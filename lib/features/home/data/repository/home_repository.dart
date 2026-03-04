@@ -109,4 +109,66 @@ class HomeRepositoryImpl implements HomeRepository {
       throw Exception('Failed to delete task: $e');
     }
   }
+
+  @override
+  Future<List<Task>> getAllTasks({
+    DateTime? dateFilter,
+    int? priorityFilter,
+  }) async {
+    try {
+      return await datasource.getAllTasks(
+        dateFilter: dateFilter,
+        priorityFilter: priorityFilter,
+      );
+    } catch (e) {
+      throw Exception('Failed to fetch tasks: $e');
+    }
+  }
+
+  @override
+  Future<List<Note>> searchNotes(String query) async {
+    try {
+      return await datasource.searchNotes(query);
+    } catch (e) {
+      throw Exception('Failed to search notes: $e');
+    }
+  }
+
+  @override
+  Future<void> createTaskGroup({
+    required String name,
+    required String color,
+    required int userId,
+    String? icon,
+  }) async {
+    try {
+      await datasource.createTaskGroup(
+        name: name,
+        color: color,
+        userId: userId,
+        icon: icon,
+      );
+    } catch (e) {
+      throw Exception('Failed to create task group: $e');
+    }
+  }
+
+  @override
+  Future<void> updateNote({
+    required int noteId,
+    String? title,
+    String? content,
+    bool? isPinned,
+  }) async {
+    try {
+      await datasource.updateNote(
+        noteId: noteId,
+        title: title,
+        content: content,
+        isPinned: isPinned,
+      );
+    } catch (e) {
+      throw Exception('Failed to update note: $e');
+    }
+  }
 }

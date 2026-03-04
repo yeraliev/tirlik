@@ -7,6 +7,9 @@ import 'package:secure_task/features/auth/presentation/screens/enter_pin_screen.
 import 'package:secure_task/features/auth/presentation/screens/register_pin_screen.dart';
 import 'package:secure_task/features/home/presentation/screens/add_note_screen.dart';
 import 'package:secure_task/features/home/presentation/screens/add_task_screen.dart';
+import 'package:secure_task/features/home/presentation/screens/all_notes_screen.dart';
+import 'package:secure_task/features/home/presentation/screens/all_tasks_screen.dart';
+import 'package:secure_task/features/home/presentation/screens/edit_note_screen.dart';
 import 'package:secure_task/features/home/presentation/screens/home_screen.dart';
 import 'package:secure_task/features/splash/presentation/screens/splash_screen.dart';
 
@@ -100,6 +103,34 @@ class AppRouter {
           name: RouteNames.addNote,
           pageBuilder: (context, state) =>
               _fadePage(state, const AddNoteScreen()),
+        ),
+        GoRoute(
+          path: '/allTasks',
+          name: RouteNames.allTasks,
+          pageBuilder: (context, state) =>
+              _fadePage(state, const AllTasksScreen()),
+        ),
+        GoRoute(
+          path: '/allNotes',
+          name: RouteNames.allNotes,
+          pageBuilder: (context, state) =>
+              _fadePage(state, const AllNotesScreen()),
+        ),
+        GoRoute(
+          path: '/editNote',
+          name: RouteNames.editNote,
+          pageBuilder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            return _fadePage(
+              state,
+              EditNoteScreen(
+                noteId: extra['noteId'] as int,
+                initialTitle: extra['title'] as String,
+                initialContent: extra['content'] as String,
+                initialIsPinned: extra['isPinned'] as bool,
+              ),
+            );
+          },
         ),
       ],
     );

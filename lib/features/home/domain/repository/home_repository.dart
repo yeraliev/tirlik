@@ -28,4 +28,21 @@ abstract class HomeRepository {
     bool? isCompleted,
   });
   Future<void> deleteTask({required int taskId});
+  Future<void> createTaskGroup({
+    required String name,
+    required String color,
+    required int userId,
+    String? icon,
+  });
+  Future<void> updateNote({
+    required int noteId,
+    String? title,
+    String? content,
+    bool? isPinned,
+  });
+  Future<List<Task>> getAllTasks({
+    DateTime? dateFilter,
+    int? priorityFilter,
+  });
+  Future<List<Note>> searchNotes(String query);
 }

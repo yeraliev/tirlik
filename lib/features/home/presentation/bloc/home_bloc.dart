@@ -4,9 +4,13 @@ import 'package:secure_task/core/database/app_database/app_database.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/add_task_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/delete_task_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/get_all_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_pinned_notes_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_priority_tasks_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/get_task_groups_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/create_task_group_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/search_notes_usecase.dart';
+import 'package:secure_task/features/home/domain/use_cases/update_note_usecase.dart';
 import 'package:secure_task/features/home/domain/use_cases/update_task_usecase.dart';
 
 part 'home_event.dart';
@@ -20,6 +24,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetTaskGroupsUsecase _getTaskGroupsUsecase;
   final UpdateTaskUseCase _updateTaskUseCase;
   final DeleteTaskUsecase _deleteTaskUsecase;
+  final GetAllTasksUsecase _getAllTasksUsecase;
+  final SearchNotesUsecase _searchNotesUsecase;
+  final CreateTaskGroupUsecase _createTaskGroupUsecase;
+  final UpdateNoteUsecase _updateNoteUsecase;
 
   HomeBloc(
     this._getPinnedNotesUsecase,
@@ -29,6 +37,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this._getTaskGroupsUsecase,
     this._updateTaskUseCase,
     this._deleteTaskUsecase,
+    this._getAllTasksUsecase,
+    this._searchNotesUsecase,
+    this._createTaskGroupUsecase,
+    this._updateNoteUsecase,
   ) : super(HomeState(status: HomeStatus.loading)) {
     on<GetTasksEvent>(_onGetTasksEvent);
     on<GetNotesEvent>(_onGetNotesEvent);
@@ -37,6 +49,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetTaskGroupsEvent>(_onGetTaskGroupsEvent);
     on<UpdateTaskEvent>(_onUpdateTaskEvent);
     on<DeleteTaskEvent>(_onDeleteTaskEvent);
+    on<GetAllTasksEvent>(_onGetAllTasksEvent);
+    on<SearchNotesEvent>(_onSearchNotesEvent);
+    on<CreateTaskGroupEvent>(_onCreateTaskGroupEvent);
+    on<UpdateNoteEvent>(_onUpdateNoteEvent);
   }
 
   Future<void> _onGetTasksEvent(
@@ -46,7 +62,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       emit(state.copyWith(status: HomeStatus.loading));
       final tasks = await _getPriorityTasksUsecase.call();
-      emit(state.copyWith(status: HomeStatus.loaded, tasks: tasks));
+      final groups = state.taskGroups ?? await _getTaskGroupsUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, tasks: tasks, taskGroups: groups));
     } catch (e) {
       emit(
         state.copyWith(
@@ -159,7 +176,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       //fetch updated tasks to keep UI in sync
       final updatedTasks = await _getPriorityTasksUsecase.call();
-      emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+
+      //also re-fetch allTasks with stored filters if the screen is open
+      if (state.allTasks != null) {
+        final updatedAllTasks = await _getAllTasksUsecase.call(
+          dateFilter: state.taskDateFilter,
+          priorityFilter: state.taskPriorityFilter,
+        );
+        emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            tasks: updatedTasks,
+            allTasks: updatedAllTasks,
+          ),
+        );
+      } else {
+        emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -180,12 +213,141 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       //fetch updated tasks to keep UI in sync
       final updatedTasks = await _getPriorityTasksUsecase.call();
-      emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+
+      //also re-fetch allTasks with stored filters if the screen is open
+      if (state.allTasks != null) {
+        final updatedAllTasks = await _getAllTasksUsecase.call(
+          dateFilter: state.taskDateFilter,
+          priorityFilter: state.taskPriorityFilter,
+        );
+        emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            tasks: updatedTasks,
+            allTasks: updatedAllTasks,
+          ),
+        );
+      } else {
+        emit(state.copyWith(status: HomeStatus.loaded, tasks: updatedTasks));
+      }
     } catch (e) {
       emit(
         state.copyWith(
           status: HomeStatus.error,
           error: 'Failed to delete task!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onGetAllTasksEvent(
+    GetAllTasksEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      final tasks = await _getAllTasksUsecase.call(
+        dateFilter: event.dateFilter,
+        priorityFilter: event.priorityFilter,
+      );
+      final groups = state.taskGroups ?? await _getTaskGroupsUsecase.call();
+      emit(
+        state.copyWith(
+          status: HomeStatus.loaded,
+          allTasks: tasks,
+          taskGroups: groups,
+          taskDateFilter: event.dateFilter,
+          taskPriorityFilter: event.priorityFilter,
+          clearTaskDateFilter: event.dateFilter == null,
+          clearTaskPriorityFilter: event.priorityFilter == null,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to fetch tasks!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onSearchNotesEvent(
+    SearchNotesEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      final notes = await _searchNotesUsecase.call(event.query);
+      emit(state.copyWith(status: HomeStatus.loaded, searchedNotes: notes));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to search notes!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onCreateTaskGroupEvent(
+    CreateTaskGroupEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      await _createTaskGroupUsecase.call(
+        name: event.name,
+        color: event.color,
+        userId: event.userId,
+        icon: event.icon,
+      );
+
+      //refresh task groups
+      final updatedGroups = await _getTaskGroupsUsecase.call();
+      emit(state.copyWith(status: HomeStatus.loaded, taskGroups: updatedGroups));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to create task group!',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onUpdateNoteEvent(
+    UpdateNoteEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+      await _updateNoteUsecase.call(
+        noteId: event.noteId,
+        title: event.title,
+        content: event.content,
+        isPinned: event.isPinned,
+      );
+
+      //refresh both note lists
+      final updatedNotes = await _getPinnedNotesUsecase.call();
+      if (state.searchedNotes != null) {
+        final updatedSearched = await _searchNotesUsecase.call('');
+        emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            notes: updatedNotes,
+            searchedNotes: updatedSearched,
+          ),
+        );
+      } else {
+        emit(state.copyWith(status: HomeStatus.loaded, notes: updatedNotes));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          error: 'Failed to update note!',
         ),
       );
     }
