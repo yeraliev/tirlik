@@ -5,6 +5,7 @@ import 'package:secure_task/features/auth/domain/use_cases/get_current_user_usec
 import 'package:secure_task/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/logout_usecase.dart';
 import 'package:secure_task/features/auth/domain/use_cases/register_usecase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -15,8 +16,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetcurrentuserUsecase _getCurrentUserUseCase;
   final LogoutUseCase _logoutUseCase;
 
-  AuthBloc(this._loginUseCase, this._logoutUseCase, this._getCurrentUserUseCase, this._registerUseCase)
-    :super(AuthState(status: AuthStatus.loading)) {
+  AuthBloc(
+    this._loginUseCase,
+    this._logoutUseCase,
+    this._getCurrentUserUseCase,
+    this._registerUseCase,
+  ) : super(AuthState(status: AuthStatus.loading)) {
+    on<AppStarted>((event, emit) async {
+      final prefs = await SharedPreferences.getInstance();
+      final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+      final user = await _getCurrentUserUseCase.call();
+
+      emit(
+        isLoggedIn
+            ? AuthState(status: AuthStatus.registered, user: user)
+            : AuthState(status: AuthStatus.initial),
+      );
+    });
     on<RegisterWithPin>(_onRegister);
     on<LoginWithPin>(_onLogin);
     on<GetCurrentUser>(_onGetCurrentUser);
@@ -36,7 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         sex: event.sex,
         pinCode: event.pin,
       );
-      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+
+      emit(state.copyWith(status: AuthStatus.registered, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.initial, error: e.toString()));
     }

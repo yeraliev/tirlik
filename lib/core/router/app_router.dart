@@ -62,6 +62,11 @@ class AppRouter {
           return '/login';
         }
 
+        if (authStatus == AuthStatus.authenticated &&
+            currentPath == '/register') {
+          return '/home';
+        }
+
         if (authStatus == AuthStatus.authenticated && currentPath == '/login') {
           return '/home';
         }

@@ -7,6 +7,7 @@ import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 import 'package:secure_task/features/home/presentation/widgets/delete_task.dart';
 import 'package:secure_task/features/home/presentation/widgets/edit_task.dart';
 import 'package:secure_task/features/home/presentation/widgets/task_detail_sheet.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class AllTasksScreen extends StatefulWidget {
   const AllTasksScreen({super.key});
@@ -78,11 +79,13 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'All Tasks',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+        title: Text(
+          AppLocalizations.of(context)!.allTasks,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
       ),
@@ -96,7 +99,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Filter by date',
+                    l10n.filterByDate,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -109,7 +112,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                     child: Row(
                       children: [
                         _DateChip(
-                          label: 'All',
+                          label: l10n.all,
                           selected: _selectedDate == null,
                           onTap: () {
                             setState(() => _selectedDate = null);
@@ -118,7 +121,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                         ),
                         const SizedBox(width: 8),
                         _DateChip(
-                          label: 'Today',
+                          label: l10n.today,
                           selected: _selectedDate != null &&
                               _isSameDay(_selectedDate!, DateTime.now()),
                           onTap: () {
@@ -131,7 +134,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                           label: _selectedDate != null &&
                                   !_isSameDay(_selectedDate!, DateTime.now())
                               ? _formatDate(_selectedDate!)
-                              : 'Pick date',
+                              : l10n.pickDate,
                           selected: _selectedDate != null &&
                               !_isSameDay(_selectedDate!, DateTime.now()),
                           icon: Icons.calendar_today,
@@ -142,7 +145,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Filter by priority',
+                    l10n.filterByPriority,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -155,7 +158,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                     child: Row(
                       children: [
                         _FilterChip(
-                          label: 'All',
+                          label: l10n.all,
                           selected: _priorityFilter == null,
                           onTap: () {
                             setState(() => _priorityFilter = null);
@@ -164,7 +167,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                         ),
                         const SizedBox(width: 8),
                         _FilterChip(
-                          label: 'High',
+                          label: l10n.high,
                           selected: _priorityFilter == 2,
                           onTap: () {
                             setState(() => _priorityFilter = 2);
@@ -173,7 +176,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                         ),
                         const SizedBox(width: 8),
                         _FilterChip(
-                          label: 'Medium',
+                          label: l10n.medium,
                           selected: _priorityFilter == 1,
                           onTap: () {
                             setState(() => _priorityFilter = 1);
@@ -182,7 +185,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                         ),
                         const SizedBox(width: 8),
                         _FilterChip(
-                          label: 'Low',
+                          label: l10n.low,
                           selected: _priorityFilter == 0,
                           onTap: () {
                             setState(() => _priorityFilter = 0);
@@ -229,7 +232,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                           SizedBox(height: height * 0.02),
                           ElevatedButton(
                             onPressed: _fetchTasks,
-                            child: const Text('Retry'),
+                            child: Text(l10n.retry),
                           ),
                         ],
                       ),
@@ -250,7 +253,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                           ),
                           SizedBox(height: height * 0.02),
                           Text(
-                            'No tasks found',
+                            l10n.noTasksFound,
                             style: TextStyle(
                               fontSize: width * 0.045,
                               color: Colors.grey,
@@ -285,7 +288,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                           context.read<HomeBloc>().add(
                             DeleteTaskEvent(taskId: task.id),
                           );
-                          _showSuccess('${task.title} deleted');
+                          _showSuccess(l10n.taskDeleted(task.id.toString(), task.title));
                         },
                         child: Card(
                           margin: EdgeInsets.only(bottom: height * 0.015),
@@ -369,7 +372,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      task.priority == 2 ? 'High' : 'Medium',
+                                      task.priority == 2 ? l10n.high : l10n.medium,
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
@@ -436,13 +439,14 @@ class _AllTasksScreenState extends State<AllTasksScreen> {
   }
 
   void _showEditTaskDialog(BuildContext context, dynamic task) async {
+    final l10n = AppLocalizations.of(context)!;
     final bool? success = await showDialog(
       context: context,
       builder: (context) => EditTaskDialog(task: task),
     );
 
     if (success ?? false) {
-      _showSuccess('Task updated successfully!');
+      _showSuccess(l10n.taskUpdatedSuccessfully);
       _fetchTasks();
     }
   }

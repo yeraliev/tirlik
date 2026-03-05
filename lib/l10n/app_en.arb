@@ -1,0 +1,257 @@
+{
+  "@@locale": "en",
+
+  "addTask": "Add Task",
+  "@addTask": {},
+
+  "addNote": "Add Note",
+  "@addNote": {},
+
+  "tasks": "Tasks",
+  "@tasks": {},
+
+  "notes": "Notes",
+  "@notes": {},
+
+  "allTasks": "All Tasks",
+  "@allTasks": {},
+
+  "allNotes": "All Notes",
+  "@allNotes": {},
+
+  "filterByDate": "Filter by date",
+  "@filterByDate": {},
+
+  "all": "All",
+  "@all": {},
+
+  "today": "Today",
+  "@today": {},
+
+  "pickDate": "Pick date",
+  "@pickDate": {},
+
+  "filterByPriority": "Filter by priority",
+  "@filterByPriority": {},
+
+  "high": "High",
+  "@high": {},
+
+  "medium": "Medium",
+  "@medium": {},
+
+  "low": "Low",
+  "@low": {},
+
+  "noTasksFound": "No tasks found",
+  "@noTasksFound": {},
+
+  "noTasksYet": "No tasks yet",
+  "@noTasksYet": {},
+
+  "retry": "Retry",
+  "@retry": {},
+
+  "taskUpdatedSuccessfully": "Task updated successfully!",
+  "@taskUpdatedSuccessfully": {},
+
+  "taskDeleted": "'{title}' deleted",
+  "@taskDeleted": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "chooseTaskType": "Choose your task type:",
+  "@chooseTaskType": {},
+
+  "title": "Title",
+  "@title": {},
+
+  "description": "Description",
+  "@description": {},
+
+  "priorityLabel": "Priority",
+  "@priorityLabel": {},
+
+  "dueDateLabel": "Due Date",
+  "@dueDateLabel": {},
+
+  "noTaskGroups": "No task groups",
+  "@noTaskGroups": {},
+
+  "saveTask": "Save Task",
+  "@saveTask": {},
+
+  "newType": "New Type",
+  "@newType": {},
+
+  "newTaskType": "New Task Type",
+  "@newTaskType": {},
+
+  "nameLabel": "Name",
+  "@nameLabel": {},
+
+  "color": "Color",
+  "@color": {},
+
+  "cancel": "Cancel",
+  "@cancel": {},
+
+  "create": "Create",
+  "@create": {},
+
+  "pickADueDate": "Pick a due date",
+  "@pickADueDate": {},
+
+  "done": "Done",
+  "@done": {},
+
+  "titleHint": "Title",
+  "@titleHint": {},
+
+  "noteHint": "Start typing...",
+  "@noteHint": {},
+
+  "searchNotes": "Search notes...",
+  "@searchNotes": {},
+
+  "noNotesYet": "No notes yet",
+  "@noNotesYet": {},
+
+  "noResultsFound": "No results found",
+  "@noResultsFound": {},
+
+  "onboarding": "Onboarding",
+  "@onboarding": {},
+
+  "tellUsAboutYourself": "Tell us about yourself 😊",
+  "@tellUsAboutYourself": {},
+
+  "name": "Name",
+  "@name": {},
+
+  "age": "Age",
+  "@age": {},
+
+  "sex": "Sex",
+  "@sex": {},
+
+  "male": "Male",
+  "@male": {},
+
+  "female": "Female",
+  "@female": {},
+
+  "other": "Other",
+  "@other": {},
+
+  "pleaseSelectYourSex": "Please select your sex",
+  "@pleaseSelectYourSex": {},
+
+  "job": "Job",
+  "@job": {},
+
+  "next": "Next",
+  "@next": {},
+
+  "createYourPin": "Create Your PIN",
+  "@createYourPin": {},
+
+  "confirmYourPin": "Confirm Your PIN",
+  "@confirmYourPin": {},
+
+  "pinsDoNotMatch": "PINs do not match",
+  "@pinsDoNotMatch": {},
+
+  "welcomeBack": "Welcome back, {name}!",
+  "@welcomeBack": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "enterYourPin": "Enter Your PIN",
+  "@enterYourPin": {},
+
+  "editTask": "Edit Task",
+  "@editTask": {},
+
+  "taskTitleLabel": "Task Title",
+  "@taskTitleLabel": {},
+
+  "enterTaskTitle": "Enter task title",
+  "@enterTaskTitle": {},
+
+  "enterTaskDescription": "Enter task description",
+  "@enterTaskDescription": {},
+
+  "update": "Update",
+  "@update": {},
+
+  "deleteTaskTitle": "Delete Task?",
+  "@deleteTaskTitle": {},
+
+  "deleteConfirmation": "Are you sure you want to delete \"{taskTitle}\"?",
+  "@deleteConfirmation": {
+    "placeholders": {
+      "taskTitle": { "type": "String" }
+    }
+  },
+
+  "delete": "Delete",
+  "@delete": {},
+
+  "language": "Language",
+  "@language": {},
+
+  "validatorNameRequired": "Name is required",
+  "@validatorNameRequired": {},
+
+  "validatorNameMinLength": "Name must be at least 2 characters",
+  "@validatorNameMinLength": {},
+
+  "validatorAgeRequired": "Age is required",
+  "@validatorAgeRequired": {},
+
+  "validatorAgeInvalidNumber": "Age must be a valid number",
+  "@validatorAgeInvalidNumber": {},
+
+  "validatorAgeInvalid": "Age must be between 1 and 150",
+  "@validatorAgeInvalid": {},
+
+  "validatorJobRequired": "Job is required",
+  "@validatorJobRequired": {},
+
+  "validatorJobMinLength": "Job must be at least 2 characters",
+  "@validatorJobMinLength": {},
+
+  "validatorSexRequired": "Sex is required",
+  "@validatorSexRequired": {},
+
+  "validatorTitleRequired": "Title is required",
+  "@validatorTitleRequired": {},
+
+  "validatorTitleMinLength": "Title must be at least 3 characters",
+  "@validatorTitleMinLength": {},
+
+  "validatorDescriptionRequired": "Description is required",
+  "@validatorDescriptionRequired": {},
+
+  "validatorDescriptionMinLength": "Description must be at least 5 characters",
+  "@validatorDescriptionMinLength": {},
+
+  "validatorTaskGroupRequired": "Please select a task group",
+  "@validatorTaskGroupRequired": {},
+
+  "validatorPriorityRequired": "Priority is required",
+  "@validatorPriorityRequired": {},
+
+  "validatorPriorityInvalid": "Invalid priority",
+  "@validatorPriorityInvalid": {},
+
+  "validatorDueDatePast": "Due date cannot be in the past",
+  "@validatorDueDatePast": {}
+}

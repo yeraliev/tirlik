@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_task/core/router/route_names.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class NotesTab extends StatefulWidget {
   const NotesTab({super.key});
@@ -21,13 +22,14 @@ class _NotesTabState extends State<NotesTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state.status == HomeStatus.loading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (state.error != null) {
@@ -50,13 +52,16 @@ class _NotesTabState extends State<NotesTab> {
                   onPressed: () {
                     context.read<HomeBloc>().add(GetNotesEvent());
                   },
-                  child: Text('Retry'),
+                  child: Text(l10n.retry),
                 ),
               ],
             ),
           );
         }
-        if (state.notes == null || state.notes!.isEmpty) {
+
+        final notes = state.notes;
+
+        if (notes == null || notes.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +73,7 @@ class _NotesTabState extends State<NotesTab> {
                 ),
                 SizedBox(height: height * 0.02),
                 Text(
-                  'No notes yet',
+                  l10n.noNotesYet,
                   style: TextStyle(fontSize: width * 0.045, color: Colors.grey),
                 ),
               ],
@@ -78,24 +83,35 @@ class _NotesTabState extends State<NotesTab> {
 
         return ListView.builder(
           padding: EdgeInsets.all(width * 0.04),
-          itemCount: state.notes!.length,
+          itemCount: notes.length,
           itemBuilder: (context, index) {
-            final note = state.notes![index];
+            final note = notes[index];
 
             return Card(
               margin: EdgeInsets.only(bottom: height * 0.015),
               child: ListTile(
                 leading: Icon(
                   note.isPinned ? Icons.push_pin : Icons.note,
-                  color: note.isPinned ? AppColors.primary : AppColors.buttonBlue,
+                  color: note.isPinned
+                      ? AppColors.primary
+                      : AppColors.buttonBlue,
                 ),
-                title: Text(note.title),
+                title: Text(
+                  note.title,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
                 subtitle: Text(
                   note.content,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                trailing: Icon(Icons.arrow_forward_ios, size: width * 0.04),
+                trailing: note.isPinned
+                    ? const Icon(
+                        Icons.push_pin,
+                        size: 16,
+                        color: AppColors.primary,
+                      )
+                    : null,
                 onTap: () async {
                   final updated = await context.pushNamed(
                     RouteNames.editNote,

@@ -1,98 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
+
 class Validators {
-  // Name validator
-  static String? name(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter your name';
-    }
-    if (value.trim().length < 2) {
-      return 'Name must be at least 2 characters';
-    }
+  final AppLocalizations _l10n;
+
+  Validators(this._l10n);
+
+  static Validators of(BuildContext context) {
+    return Validators(AppLocalizations.of(context)!);
+  }
+
+  String? name(String? value) {
+    if (value == null || value.trim().isEmpty) return _l10n.validatorNameRequired;
+    if (value.trim().length < 2) return _l10n.validatorNameMinLength;
     return null;
   }
 
-  // Age validator
-  static String? age(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter your age';
-    }
-
+  String? age(String? value) {
+    if (value == null || value.trim().isEmpty) return _l10n.validatorAgeRequired;
     final age = int.tryParse(value.trim());
-    if (age == null) {
-      return 'Please enter a valid number';
-    }
-
-    if (age < 1 || age > 150) {
-      return 'Please enter a valid age';
-    }
-
+    if (age == null) return _l10n.validatorAgeInvalidNumber;
+    if (age < 1 || age > 150) return _l10n.validatorAgeInvalid;
     return null;
   }
 
-  // Job validator
-  static String? job(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter your job';
-    }
-    if (value.trim().length < 2) {
-      return 'Job must be at least 2 characters';
-    }
+  String? job(String? value) {
+    if (value == null || value.trim().isEmpty) return _l10n.validatorJobRequired;
+    if (value.trim().length < 2) return _l10n.validatorJobMinLength;
     return null;
   }
 
-  // Dropdown/Selection validator (for sex field)
-  static String? required(String? value, String fieldName) {
-    if (value == null || value.isEmpty) {
-      return 'Please select $fieldName';
-    }
+  String? sex(String? value) {
+    if (value == null || value.isEmpty) return _l10n.validatorSexRequired;
     return null;
   }
 
-  //task title validator
-  static String? title(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter a title';
-    }
-    if (value.trim().length < 3) {
-      return 'Title must be at least 3 characters';
-    }
+  String? title(String? value) {
+    if (value == null || value.trim().isEmpty) return _l10n.validatorTitleRequired;
+    if (value.trim().length < 3) return _l10n.validatorTitleMinLength;
     return null;
   }
 
-  //task description validator
-  static String? description(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter a description';
-    }
-    if (value.trim().length < 5) {
-      return 'Description must be at least 5 characters';
-    }
+  String? description(String? value) {
+    if (value == null || value.trim().isEmpty) return _l10n.validatorDescriptionRequired;
+    if (value.trim().length < 5) return _l10n.validatorDescriptionMinLength;
     return null;
   }
 
-  //task taskGroup validator
-  static String? taskGroup(int? value) {
-    if (value == null) {
-      return 'Please select a task group';
-    }
+  String? taskGroup(int? value) {
+    if (value == null) return _l10n.validatorTaskGroupRequired;
     return null;
   }
 
-  //task priority validator
-  static String? priority(int? value) {
-    if (value == null) {
-      return 'Please select a priority';
-    }
-    if (value < 0 || value > 2) {
-      return 'Invalid priority selected';
-    }
+  String? priority(int? value) {
+    if (value == null) return _l10n.validatorPriorityRequired;
+    if (value < 0 || value > 2) return _l10n.validatorPriorityInvalid;
     return null;
   }
 
-  //task dueDate validator
-  static String? dueDate(DateTime? value) {
-    if (value != null && value.isBefore(DateTime.now())) {
-      return 'Due date cannot be in the past';
-    }
+  String? dueDate(DateTime? value) {
+    if (value != null && value.isBefore(DateTime.now())) return _l10n.validatorDueDatePast;
     return null;
   }
 }

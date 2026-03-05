@@ -3,6 +3,8 @@ part of 'auth_bloc.dart';
 @immutable
 sealed class AuthEvent {}
 
+class AppStarted extends AuthEvent {}
+
 class RegisterWithPin extends AuthEvent {
   final String name;
   final int age;

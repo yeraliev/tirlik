@@ -7,6 +7,7 @@ import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
 import 'package:secure_task/features/home/presentation/widgets/delete_task.dart';
 import 'package:secure_task/features/home/presentation/widgets/edit_task.dart';
 import 'package:secure_task/features/home/presentation/widgets/task_detail_sheet.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class TasksTab extends StatefulWidget {
   const TasksTab({super.key});
@@ -46,6 +47,7 @@ class _TasksTabState extends State<TasksTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -80,7 +82,7 @@ class _TasksTabState extends State<TasksTab> {
                   onPressed: () {
                     context.read<HomeBloc>().add(GetTasksEvent());
                   },
-                  child: Text('Retry'),
+                  child: Text(l10n.retry),
                 ),
               ],
             ),
@@ -95,7 +97,7 @@ class _TasksTabState extends State<TasksTab> {
                 Icon(Icons.task_alt, size: width * 0.2, color: Colors.grey),
                 SizedBox(height: height * 0.02),
                 Text(
-                  'No tasks yet',
+                  l10n.noTasksFound,
                   style: TextStyle(fontSize: width * 0.045, color: Colors.grey),
                 ),
               ],
@@ -119,8 +121,7 @@ class _TasksTabState extends State<TasksTab> {
               background: _buildDismissBackground(width, height),
               onDismissed: (direction) {
                 context.read<HomeBloc>().add(DeleteTaskEvent(taskId: task.id));
-
-                _showSuccess('${task.title} deleted');
+                _showSuccess(l10n.taskDeleted(task.id.toString(), task.title));
               },
               child: Card(
                 margin: EdgeInsets.only(bottom: height * 0.015),
@@ -225,13 +226,14 @@ class _TasksTabState extends State<TasksTab> {
   }
 
   void _showEditTaskDialog(BuildContext context, dynamic task) async {
+    final l10n = AppLocalizations.of(context)!;
     final bool? success = await showDialog(
       context: context,
       builder: (context) => EditTaskDialog(task: task),
     );
 
     if (success ?? false) {
-      _showSuccess('Task updated successfully!');
+      _showSuccess(l10n.taskUpdatedSuccessfully);
     }
   }
 

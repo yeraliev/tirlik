@@ -6,6 +6,7 @@ Widget homeButton({
   required BuildContext context,
   IconData? icon,
   VoidCallback? onTap,
+  int? maxLines,
 }) {
   return GestureDetector(
     onTap: onTap,
@@ -16,7 +17,7 @@ Widget homeButton({
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 35),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
@@ -26,9 +27,12 @@ Widget homeButton({
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
             ],
-            SizedBox(width: 8),
+            const SizedBox(height: 8),
             Text(
               text,
+              textAlign: TextAlign.center,
+              maxLines: maxLines ?? 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 18,
                 color: Theme.of(context).colorScheme.onPrimary,

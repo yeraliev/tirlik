@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_task/core/router/route_names.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class AllNotesScreen extends StatefulWidget {
   const AllNotesScreen({super.key});
@@ -30,14 +31,15 @@ class _AllNotesScreenState extends State<AllNotesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'All Notes',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+        title: Text(
+          l10n.allNotes,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
       ),
@@ -54,7 +56,7 @@ class _AllNotesScreenState extends State<AllNotesScreen> {
                   );
                 },
                 decoration: InputDecoration(
-                  hintText: 'Search notes...',
+                  hintText: l10n.searchNotes,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
@@ -120,7 +122,7 @@ class _AllNotesScreenState extends State<AllNotesScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Retry'),
+                            child: Text(l10n.retry),
                           ),
                         ],
                       ),
@@ -142,8 +144,8 @@ class _AllNotesScreenState extends State<AllNotesScreen> {
                           SizedBox(height: height * 0.02),
                           Text(
                             _searchController.text.isEmpty
-                                ? 'No notes yet'
-                                : 'No results found',
+                                ? l10n.noNotesYet
+                                : l10n.noResultsFound,
                             style: TextStyle(
                               fontSize: width * 0.045,
                               color: Colors.grey,

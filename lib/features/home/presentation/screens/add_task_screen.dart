@@ -7,6 +7,7 @@ import 'package:secure_task/core/validators/validators.dart';
 import 'package:secure_task/core/widgets/custom_snackbar.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -22,7 +23,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   int? selectedGroupId;
   int selectedPriority = 0;
   DateTime? _dueDate;
-  final Map<String, int> priorities = {'Low': 0, 'Medium': 1, 'High': 2};
 
   @override
   void initState() {
@@ -52,13 +52,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     double height = MediaQuery.sizeOf(context).height;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Task',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+        title: Text(
+          l10n.addTask,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
       ),
@@ -73,31 +74,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 child: BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
+                    final l10n = AppLocalizations.of(context)!;
+                    final v = Validators.of(context);
+                    final priorities = {
+                      l10n.low: 0,
+                      l10n.medium: 1,
+                      l10n.high: 2,
+                    };
+
                     if (state.status == HomeStatus.loading) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
                     final taskGroups = state.taskGroups ?? [];
-
-                    if (taskGroups.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text('No task groups'),
-                            const SizedBox(height: 12),
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<HomeBloc>().add(
-                                  GetTaskGroupsEvent(),
-                                );
-                              },
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
 
                     return Form(
                       key: _formKey,
@@ -105,7 +94,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Choose your task type: ',
+                            l10n.chooseTaskType,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w500,
@@ -113,30 +102,30 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           SizedBox(height: height * 0.01),
-                          _buildGroups(taskGroups),
+                          _buildGroups(taskGroups, l10n),
                           SizedBox(height: height * 0.02),
                           TextFormField(
                             controller: _titleController,
-                            decoration: const InputDecoration(
-                              labelText: 'Title',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n.title,
+                              border: const OutlineInputBorder(),
                             ),
-                            validator: Validators.title,
+                            validator: v.title,
                           ),
                           SizedBox(height: height * 0.02),
                           TextFormField(
                             controller: _descController,
                             maxLines: 4,
-                            decoration: const InputDecoration(
-                              labelText: 'Description',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n.description,
+                              border: const OutlineInputBorder(),
                               alignLabelWithHint: true,
                             ),
-                            validator: Validators.description,
+                            validator: v.description,
                           ),
                           SizedBox(height: height * 0.02),
                           Text(
-                            'Priority: ',
+                            l10n.priorityLabel,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w500,
@@ -147,7 +136,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           _buildPriorities(priorities),
                           SizedBox(height: height * 0.02),
                           Text(
-                            'Due date (optional): ',
+                            l10n.dueDateLabel,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w500,
@@ -155,8 +144,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           SizedBox(height: height * 0.01),
-                          _buildDatePicker(),
-                          SizedBox(height: 100),
+                          _buildDatePicker(l10n),
+                          const SizedBox(height: 100),
                         ],
                       ),
                     );
@@ -170,8 +159,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               right: 16,
               child: ElevatedButton(
                 onPressed: () async {
-                  final taskGroupError = Validators.taskGroup(selectedGroupId);
-                  final priorityError = Validators.priority(selectedPriority);
+                  final v = Validators.of(context);
+                  final taskGroupError = v.taskGroup(selectedGroupId);
+                  final priorityError = v.priority(selectedPriority);
 
                   if (_formKey.currentState!.validate() &&
                       selectedGroupId != null) {
@@ -198,7 +188,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     }
                   }
                 },
-                child: const Text('Save Task'),
+                child: Text(l10n.saveTask),
               ),
             ),
           ],
@@ -207,7 +197,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  Widget _buildGroups(List<TaskGroup> taskGroups) {
+  Widget _buildGroups(List<TaskGroup> taskGroups, AppLocalizations l10n) {
     return Wrap(
       spacing: 12,
       runSpacing: 12,
@@ -268,7 +258,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  'New type',
+                  l10n.newType,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,
@@ -284,11 +274,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   void _showCreateGroupDialog() {
+    final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController();
     String selectedColor = '#6C63FF';
     final colors = [
-      '#6C63FF', '#FF6B35', '#4A90E2', '#00C853',
-      '#7C4DFF', '#E91E63', '#009688', '#FF9800',
+      '#6C63FF',
+      '#FF6B35',
+      '#4A90E2',
+      '#00C853',
+      '#7C4DFF',
+      '#E91E63',
+      '#009688',
+      '#FF9800',
     ];
 
     showDialog(
@@ -300,7 +297,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              title: const Text('New Task Type'),
+              title: Text(l10n.newTaskType),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +305,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   TextField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: 'Name',
+                      labelText: l10n.nameLabel,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -316,9 +313,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     textCapitalization: TextCapitalization.sentences,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Color',
-                    style: TextStyle(fontWeight: FontWeight.w500),
+                  Text(
+                    l10n.color,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -345,7 +342,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           child: isSelected
-                              ? const Icon(Icons.check, color: Colors.white, size: 16)
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 16,
+                                )
                               : null,
                         ),
                       );
@@ -356,7 +357,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -374,7 +375,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     );
                     Navigator.of(ctx).pop();
                   },
-                  child: const Text('Create'),
+                  child: Text(l10n.create),
                 ),
               ],
             );
@@ -424,7 +425,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  Widget _buildDatePicker() {
+  Widget _buildDatePicker(AppLocalizations l10n) {
     return InkWell(
       onTap: () async {
         final picked = await showDatePicker(
@@ -445,7 +446,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: Text(
           _dueDate != null
               ? '${_dueDate!.day.toString().padLeft(2, '0')}/${_dueDate!.month.toString().padLeft(2, '0')}/${_dueDate!.year}'
-              : 'Pick a due date',
+              : l10n.pickADueDate,
           style: TextStyle(
             color: _dueDate != null ? Colors.black87 : Colors.grey.shade600,
             fontWeight: FontWeight.w500,

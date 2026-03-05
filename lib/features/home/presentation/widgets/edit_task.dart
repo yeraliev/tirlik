@@ -107,7 +107,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                validator: Validators.title,
+                validator: (value) => Validators.of(context).title(value),
               ),
               SizedBox(height: height * 0.02),
 
@@ -125,7 +125,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                validator: Validators.description,
+                validator: (value) => Validators.of(context).description(value),
               ),
               SizedBox(height: height * 0.03),
 

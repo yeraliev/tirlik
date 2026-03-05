@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secure_task/core/theme/app_colors.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/home/presentation/bloc/home_bloc.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -29,6 +30,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -54,9 +57,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           ),
           TextButton(
             onPressed: () => _saveNote(context),
-            child: const Text(
-              'Done',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+            child: Text(
+              l10n.done,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -73,8 +76,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
-                decoration: const InputDecoration(
-                  hintText: 'Title',
+                decoration: InputDecoration(
+                  hintText: l10n.titleHint,
                   hintStyle: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -100,8 +103,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   controller: _contentController,
                   focusNode: _contentFocusNode,
                   style: const TextStyle(fontSize: 17),
-                  decoration: const InputDecoration(
-                    hintText: 'Note',
+                  decoration: InputDecoration(
+                    hintText: l10n.noteHint,
                     hintStyle: TextStyle(fontSize: 18, color: Colors.grey),
                     fillColor: AppColors.background,
                     border: InputBorder.none,

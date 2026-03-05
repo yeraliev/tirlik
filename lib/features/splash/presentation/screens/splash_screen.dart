@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(Duration(seconds: 2));
 
     if (mounted) {
-      context.read<AuthBloc>().add(GetCurrentUser());
+      context.read<AuthBloc>().add(AppStarted());
     }
   }
 

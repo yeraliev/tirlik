@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secure_task/core/widgets/custom_snackbar.dart';
 import 'package:secure_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:secure_task/features/auth/presentation/widgets/custom_num_keyboard.dart';
+import 'package:secure_task/l10n/app_localizations.dart';
 
 class EnterPinScreen extends StatefulWidget {
   const EnterPinScreen({super.key});
@@ -43,13 +44,14 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     double height = MediaQuery.sizeOf(context).height;
     double width = MediaQuery.sizeOf(context).width;
 
-    // Use responsive spacing
-    double horizontalPadding = width * 0.06; // 6% of width
-    double verticalSpacing = height * 0.02; // 2% of height
-    double pinDotSize = width * 0.04; // 4% of width (scales with screen)
+    //Use responsive spacing
+    double horizontalPadding = width * 0.06; 
+    double verticalSpacing = height * 0.02; 
+    double pinDotSize = width * 0.04; 
 
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
@@ -67,8 +69,7 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
                 vertical: verticalSpacing,
               ),
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween, // Better than fixed spacing
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     children: [
@@ -78,7 +79,7 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
                         child: SizedBox(
                           width: width * 0.7,
                           child: Text(
-                            "Welcome back, ${state.user!.name}!",
+                            l10n.welcomeBack(state.user!.name),
                             textAlign: TextAlign.start,
                             maxLines: 4,
                             style: TextStyle(
@@ -91,7 +92,7 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
                       ),
                       SizedBox(height: verticalSpacing * 3),
                       Text(
-                        'Enter Your PIN',
+                        l10n.enterYourPin,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       SizedBox(height: verticalSpacing),
@@ -123,7 +124,7 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
         return Container(
           margin: EdgeInsets.symmetric(
             horizontal: dotSize * 0.5,
-          ), // Scale margin too
+          ),
           width: dotSize,
           height: dotSize,
           decoration: BoxDecoration(
